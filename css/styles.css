@@ -22,7 +22,7 @@ a {
 	text-decoration: none;
 }
 a:hover, a:focus {
-	color: #3397db;
+	color: #71C6FF;
 	text-decoration: none;
 }
 a img{
@@ -36,10 +36,9 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 	display: block;
 }
 #maincontent {
-  background-color: #f3f3f3;
   min-height: 100%;
 }
-#footer {
+/*#footer {
   background-color: #444;
   color: #aaa;
   font-size: 8pt;
@@ -47,7 +46,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   padding: 25px;
   text-align: center;
   text-transform: uppercase;
-}
+}*/
 /* ====================== Navigation ====================== */
 nav {
   width: 100%;
@@ -130,7 +129,7 @@ nav h1 a {
 }
 
 /* ====================== Restaurant Listing ====================== */
-#restaurants-list {
+/*#restaurants-list {
   background-color: #f3f3f3;
   list-style: outside none none;
   margin: 0;
@@ -180,7 +179,7 @@ nav h1 a {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-}
+}*/
 
 /* ====================== Restaurant Details ====================== */
 .inside header {

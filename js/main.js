@@ -75,26 +75,29 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   };
+
   self.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
     scrollwheel: false
   });
+
   updateRestaurants();
 }
+
 
 /**
  * Update page and map for current restaurants.
  */
 updateRestaurants = () => {
-  const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
+  const cSelect = document.getElementById('cuisines-select');
 
-  const cIndex = cSelect.selectedIndex;
   const nIndex = nSelect.selectedIndex;
+  const cIndex = cSelect.selectedIndex;
 
-  const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
+  const cuisine = cSelect[cIndex].value;
 
   DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
     if (error) { // Got an error!
@@ -138,27 +141,49 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  const more = document.createElement('a');
+  more.href = DBHelper.urlForRestaurant(restaurant);
+  li.append(more)
+
   const image = document.createElement('img');
+  const images = DBHelper.imagesUrlForRestaurant(restaurant);
+
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  li.append(image);
+  image.src = images.large; // default image
+
+  // responsive images attributes
+  image.srcset = `${images.medium} 460w, ${images.large} 2x`;
+  image.sizes = '(min-width: 600px) 320px';
+
+  // alternative text for better accesibility
+  image.alt = restaurant.name;
+
+  more.append(image);
+  
+  // cuisine type
+  const cuisine = document.createElement('span');
+  cuisine.className = 'cuisine-type';
+  cuisine.innerHTML = restaurant.cuisine_type;
+  more.append(cuisine);
+
+  // restaurant info
+  const info = document.createElement('div');
+  info.className = "restaurant-info";
+  more.append(info);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
-  li.append(name);
+  info.append(name);
 
-  const neighborhood = document.createElement('p');
+  const neighborhood = document.createElement('span');
+  neighborhood.className = "restaurant-neighborhood";
   neighborhood.innerHTML = restaurant.neighborhood;
-  li.append(neighborhood);
+  info.append(neighborhood);
 
-  const address = document.createElement('p');
+  const address = document.createElement('span');
+  address.className = "restaurant-address";
   address.innerHTML = restaurant.address;
-  li.append(address);
-
-  const more = document.createElement('a');
-  more.innerHTML = 'View Details';
-  more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  info.append(address);
 
   return li
 }

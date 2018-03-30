@@ -51,13 +51,27 @@ fetchRestaurantFromURL = (callback) => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
+  // Image title (figcaption)
+  const figcaption = document.querySelector('#restaurant-img + figcaption');
+  figcaption.innerHTML = restaurant.name;
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  const images = DBHelper.imagesUrlForRestaurant(restaurant); //URLs
+
+  // responsive images attributes
+  image.src = images.large;
+  image.srcset = `
+    ${images.medium} 460w, 
+    ${images.large} 900w, 
+    ${images.large_2x} 1600w`;
+
+  image.sizes = '(min-width: 950px) 700px';
+
+  // alternative text for better accesibility
+  image.alt = restaurant.name;
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -126,7 +140,27 @@ createReviewHTML = (review) => {
   li.appendChild(date);
 
   const rating = document.createElement('p');
-  rating.innerHTML = `Rating: ${review.rating}`;
+  
+  let ratingStars = '';
+  switch(review.rating){
+    case 1:
+      ratingStars = '★☆☆☆☆';
+      break;
+    case 2:
+      ratingStars = '★★☆☆☆';
+      break;
+    case 3:
+      ratingStars = '★★★☆☆';
+      break;
+    case 4:
+      ratingStars = '★★★★☆';
+      break;
+    case 5:
+      ratingStars = '★★★★★';
+      break;
+  }
+
+  rating.innerHTML = ratingStars;
   li.appendChild(rating);
 
   const comments = document.createElement('p');

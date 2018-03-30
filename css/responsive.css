@@ -1,0 +1,477 @@
+@charset "utf-8";
+
+/*************** GLOBAL ***************/
+*{
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+/* element focus */
+*:focus{
+    outline: 3px solid #71C6FF;
+}
+
+body{
+    background-color: #333;
+    min-width: 320px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: #fff;
+}
+
+/* links */             
+a{
+    color: orange;
+    text-decoration: none;
+}
+a:hover, a:focus {
+    color: #71C6FF;
+    text-decoration: none;
+}
+
+/*************** HEADER ***************/
+header{
+    display: block;
+    text-align: center;
+}
+header h1{
+    height: 60px;
+    background-color: #222;
+    margin: 0;
+    padding-top: 5px;
+}
+header #title{
+    color: #fff;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    line-height: 1.5;
+    font-weight: 200;
+}
+
+/*************** FILTERS ***************/
+#filters{
+    width: 100%;
+    height: 50px;
+    background-color: #222;
+    overflow: hidden;
+    z-index: 99;
+    display: flex;
+}
+/* filters off screen */
+#filters label{
+    position: absolute;
+    top: -100px;
+}
+#filters select:first-of-type{
+    width: 60vw;
+}
+#filters select:last-of-type{
+    width: 40vw;
+}
+#filters select{
+    height: 40px;
+    margin-top: 5px;
+    padding-left: 10px;
+}
+/* auxiliary classes for javascript function keepOnTop() (responsive.js) */
+.fixed{
+    position: fixed;
+    top: 0;
+    z-index: 99;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.fixed-margined{
+    margin-top: 50px !important;
+}
+
+
+/************* MAIN ***************/
+#maincontent-index{
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* map */
+#map-container{
+    width: 100vw;
+    height: 40vh;
+    min-height: 200px;
+}
+/* restaurant.html*/
+#map-container-restaurant{
+    width: 100vw;
+    height: 40vh;
+    transition: height 1s, visibility 1s;
+}
+#map{
+    width: 100%;
+    height: 100%;
+}
+
+/*************** RESTAURANTS-LIST ***************/
+#restaurants-list-container{
+    margin: auto;
+}
+#restaurants-list{
+    padding: 0;
+    margin: 0;
+    padding: 10px;
+    display: grid;
+    grid-gap: 10px;
+}
+#restaurants-list li{
+
+    position: relative;
+    list-style: none;
+}
+#restaurants-list li:hover {
+    box-shadow: 0 0 5px 5px rgba(255, 255, 255, 0.4);
+}
+.restaurant-img{
+    width: 100%;
+}
+.restaurant-info{
+    width: 100%;
+    height: 65px;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 1);
+    padding: 5px;
+}
+/* restaurant-name */
+.restaurant-info h1{
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+}
+/* restaurant neighborhoods and addres */
+.restaurant-info span{
+    color: #fff;
+}
+
+
+.restaurant-neighborhood, .restaurant-address{
+    font-size: 15px;
+    display: block;
+}
+.cuisine-type{
+    background-color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: #71C6FF;
+}
+
+
+/************** FOOTER *****************/
+footer{
+    display: block;
+    height: 60px;
+    font-size: 12px;
+    background-color: #444;
+    color: #FFFFFF;
+    padding: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+
+
+
+
+
+
+
+#breadcrumb{
+    width: 100%;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 5px 10px 5px 10px;
+    height: 50px;
+    background-color: #444;
+    font-size: 16px;
+    max-width: 1000px;
+    margin: auto;
+}
+#breadcrumb li{
+    text-transform: uppercase;
+}
+#breadcrumb li::before{
+    content: "/";
+    padding: 5px;
+}
+
+#maincontent-restaurant{
+    margin: 5px 10px 5px 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/********** RESTAURANT-CONTAINER **********/
+#restaurant-container figure{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    
+    overflow: hidden;
+}
+#restaurant-container figure img{
+    width: 100%;
+}
+#restaurant-container figure figcaption{
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+    order: -1;
+    background-color: #000000;
+    text-transform: uppercase;
+}
+/* DELETE ? */
+#restaurant-container h1
+{
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    background-color: #000000;
+    text-transform: uppercase;
+}
+
+
+#restaurant-info{
+    margin-top: 5px;
+    padding: 10px;
+    background-color: #222;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    grid-gap: 10px;
+}
+
+#restaurant-info label{
+    background-color: #333;
+    border: 1px solid;
+    text-transform: uppercase;
+    font-size: .9em;
+    padding-right: 5px;
+    /* center verticaly text from label */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+#restaurant-info span:first-of-type{
+    font-weight: bold;
+}
+
+#btn-see-map{
+    grid-column: 1 / 3;
+    height: 48px;
+}
+.hidden-map{
+    height: 0 !important;
+    visibility: hidden;
+}
+
+
+/* TABLE restaurant-hours */
+#restaurant-hours{
+    border: 1px solid #555;
+    width: 100%;
+    margin-top: 10px;
+}
+#restaurant-hours tr:nth-child(odd){
+    background-color: #444;
+}
+#restaurant-hours tr td:first-child{
+    text-align: right;
+    width: 100px;
+    padding-right: 5px;
+}
+#restaurant-hours tr td:last-child{
+    padding-left: 10px;
+}
+
+
+/* REVIEWS */
+
+/* HEADER from reviews */
+#reviews-container h2{
+    text-transform: uppercase;
+    font-size: 1.3em;
+    letter-spacing: 5px;
+    padding: 5px 0 5px 0;
+    text-align: center;
+    border-bottom: 1px solid;
+}
+#reviews-list{
+    list-style: none;
+    padding: 0;
+}
+
+#reviews-list li{
+    background-color: #444;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+#reviews-list li p{
+    margin: 0;
+    padding: 5px;
+}
+/* name */
+#reviews-list li p:first-child{
+    font-weight: 700;
+    font-size: 1.5em;
+}
+/* date */
+#reviews-list li p:nth-child(2){
+    color: #DBDBDB;
+    text-transform: uppercase;
+    font-size: .9em;
+}
+/* rating */
+#reviews-list li p:nth-child(3){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid;
+    width: 100px;
+    height: 25px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 1.4em;
+    color: #FFF000;
+    
+    /* fix vertical align of the stars*/
+    padding-bottom: 7px;
+    padding-top: 3px;
+}
+
+
+/*************** FIRST BREAKPOINT 600px **************/
+@media screen and (min-width: 600px){
+    #filters{
+        flex-direction: column;
+        min-height: 200px;
+        height: 40vh;
+        padding: 5px;
+        padding-top: 10px;
+        width: 210px;
+    }
+    #filters select{
+        width: 200px !important;
+        margin-bottom: 20px;
+    }
+    #filters label{
+        position: relative;
+        top: auto;
+    }
+
+    /* restaurants list to two columns*/
+    #restaurants-list{
+        grid-template-columns: 1fr 1fr;
+    }
+    #restaurants-list li{
+        width: auto;
+    }
+    
+    #map-container{
+        width: calc(100% - 210px);
+        order: -2;
+    }
+
+    #btn-see-map{
+        display: none;
+    }
+
+    /* restaurant-container */
+    #restaurant-container{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 5px;
+    }
+    #restaurant-container figure{
+        grid-column: 1 / span 2;
+    }
+    #restaurant-info{
+        width: 100%;   
+    }
+    #restaurant-hours-container{
+        width: 100%;
+    }
+    #map-container-restaurant{
+        width: 100%;
+        height: 100% !important;
+        grid-column-start: 2;
+        grid-row: 2 / span 2; 
+    }
+    /* fix class hidden-map when breakpoint exceeds 600px */
+    #map-container-restaurant.hidden-map{
+        visibility: visible;
+    }
+}
+
+
+
+/*************** SECOND BREAKPOINT 950px **************/
+@media screen and (min-width: 950px){
+    #maincontent-index{
+        padding-left: 10px; 
+        padding-right: 10px; 
+    }
+
+    #restaurants-list{
+        grid-template-columns: repeat(3, 1fr);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* restaurant.html */
+    
+    #restaurant-container{
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: 150px; 
+        margin-top: 5px;
+
+    }
+    /* img */
+    #restaurant-container figure{
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 2;
+        order: 1;
+    }
+    #restaurant-info{
+        order: 2;
+        margin-top: 0;
+    }
+    /* hours table*/
+    #restaurant-hours-container{
+        order: 3;
+    }
+    
+    #map-container-restaurant{
+        grid-row: 3;
+        grid-column: 1 / span 2;
+        order: 4;
+        min-height: 200px;
+        height: 60vh !important;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid;
+    }
+}

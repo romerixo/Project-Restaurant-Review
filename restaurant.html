@@ -2,67 +2,84 @@
 <html>
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <link rel="stylesheet" href="css/responsive.css">
+  
   <title>Restaurant Info</title>
 </head>
 
 <body class="inside">
-  <!-- Beginning header -->
+
   <header>
-    <!-- Beginning nav -->
+
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1><a id="title" href="/">Restaurant Reviews</a></h1>
     </nav>
-    <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
+
+    <ul id="breadcrumb">
       <li><a href="/">Home</a></li>
     </ul>
-    <!-- End breadcrumb -->
-    <!-- End nav -->
-  </header>
-  <!-- End header -->
 
-  <!-- Beginning main -->
-  <main id="maincontent">
-    <!-- Beginning map -->
-    <section id="map-container">
-      <div id="map"></div>
-    </section>
-    <!-- End map -->
-    <!-- Beginning restaurant -->
+  </header>
+
+
+  <main id="maincontent-restaurant">
+
     <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
-      <img id="restaurant-img">
-      <p id="restaurant-cuisine"></p>
-      <p id="restaurant-address"></p>
-      <table id="restaurant-hours"></table>
+      <figure>
+        <img id="restaurant-img">
+        <figcaption></figcaption>
+      </figure>
+
+      <div id="restaurant-info">
+        <label for="restaurant-name">Name</label>
+        <span id="restaurant-name"></span>          
+        
+        <label for="restaurant-cuisine">Cuisine type</label>
+        <span id="restaurant-cuisine"></span>          
+        
+        <label for="restaurant-address">Addres</label>
+        <span id="restaurant-address"></span>
+
+        <button id="btn-see-map" onclick="mapToggleHidden()">See on Map</button>
+      </div>      
+
+      <div id="map-container-restaurant" class="hidden-map">
+        <div id="map"></div>
+      </div>
+
+      <div id="restaurant-hours-container">
+        <table id="restaurant-hours"></table>
+      </div>
     </section>
-    <!-- end restaurant -->
-    <!-- Beginning reviews -->
+
     <section id="reviews-container">
       <ul id="reviews-list"></ul>
     </section>
-    <!-- End reviews -->
+
   </main>
-  <!-- End main -->
 
-  <!-- Beginning footer -->
+
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    <span>&copy;</span> 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
-  <!-- End footer -->
 
-  <!-- Beginning scripts -->
+
+
   <!-- Database helpers -->
   <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
+  <!-- Responsive Features -->
+  <script type="text/javascript" src="js/responsive.js"></script>
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script>
-  <!-- End scripts -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS55fy6liCeRXsveBpo3TPwjsN5w9eWh0&libraries=places&callback=initMap"></script>
+
 
 </body>
 
