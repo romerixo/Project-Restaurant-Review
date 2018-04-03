@@ -133,38 +133,49 @@ createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('p');
   name.innerHTML = review.name;
+  name.setAttribute('aria-label', 'Authors\' name');
   li.appendChild(name);
 
   const date = document.createElement('p');
   date.innerHTML = review.date;
+  date.setAttribute('aria-label', 'Date of review publication');
   li.appendChild(date);
 
   const rating = document.createElement('p');
-  
   let ratingStars = '';
+  let ariaLabel = '';
+
   switch(review.rating){
     case 1:
       ratingStars = '★☆☆☆☆';
+      ariaLabel = 'Rating one out off five stars';
       break;
     case 2:
       ratingStars = '★★☆☆☆';
+      ariaLabel = 'Rating two out off five stars';
       break;
     case 3:
       ratingStars = '★★★☆☆';
+      ariaLabel = 'Rating three out off five stars';
       break;
     case 4:
       ratingStars = '★★★★☆';
+      ariaLabel = 'Rating four out off five stars';
       break;
     case 5:
       ratingStars = '★★★★★';
+      ariaLabel = 'Rating five out off five stars';
       break;
   }
 
   rating.innerHTML = ratingStars;
+  rating.setAttribute('aria-label', ariaLabel);
+  rating.title = ariaLabel;
   li.appendChild(rating);
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
+  comments.setAttribute('aria-label', 'Review');
   li.appendChild(comments);
 
   return li;

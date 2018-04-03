@@ -94,7 +94,7 @@ class Focus{
 
         if(this.focIndex >= this.focusables.length)
             this.focIndex = 0;
-        console.log('focIndex returned:', this.focIndex);
+
         return this.focusables[this.focIndex];
     }
 

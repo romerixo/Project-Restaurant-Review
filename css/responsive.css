@@ -1,6 +1,7 @@
 @charset "utf-8";
 
-/*************** GLOBAL ***************/
+
+/* BEGINING Global ************************************************************/
 *{
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
@@ -29,8 +30,10 @@ a:hover, a:focus {
     color: #71C6FF;
     text-decoration: none;
 }
+/* END Global *****************************************************************/
 
-/*************** HEADER ***************/
+
+/* BEGINING Header ************************************************************/
 header{
     display: block;
     text-align: center;
@@ -49,8 +52,10 @@ header #title{
     line-height: 1.5;
     font-weight: 200;
 }
+/* END Header *****************************************************************/
 
-/*************** FILTERS ***************/
+
+/* BEGINING Filters ***********************************************************/
 #filters{
     width: 100%;
     height: 50px;
@@ -58,6 +63,11 @@ header #title{
     overflow: hidden;
     z-index: 99;
     display: flex;
+}
+/* Filters header */
+#filters h2{
+    visibility: hidden;
+    position: absolute;
 }
 /* filters off screen */
 #filters label{
@@ -75,6 +85,9 @@ header #title{
     margin-top: 5px;
     padding-left: 10px;
 }
+/* END Filters ****************************************************************/
+
+
 /* auxiliary classes for javascript function keepOnTop() (responsive.js) */
 .fixed{
     position: fixed;
@@ -88,7 +101,7 @@ header #title{
 }
 
 
-/************* MAIN ***************/
+/* BEGINING Main (index.html) *************************************************/
 #maincontent-index{
     max-width: 1000px;
     margin-left: auto;
@@ -96,8 +109,10 @@ header #title{
     display: flex;
     flex-wrap: wrap;
 }
+/* END Main (index.html) ******************************************************/
 
-/* map */
+
+/* BEGINING Map ***************************************************************/
 #map-container{
     width: 100vw;
     height: 40vh;
@@ -113,8 +128,11 @@ header #title{
     width: 100%;
     height: 100%;
 }
+/* END Map ********************************************************************/
 
-/*************** RESTAURANTS-LIST ***************/
+
+
+/* BEGINING Restaurant list ***************************************************/
 #restaurants-list-container{
     margin: auto;
 }
@@ -155,7 +173,6 @@ header #title{
     color: #fff;
 }
 
-
 .restaurant-neighborhood, .restaurant-address{
     font-size: 15px;
     display: block;
@@ -171,9 +188,11 @@ header #title{
     padding-right: 5px;
     color: #71C6FF;
 }
+/* END Restaurant list ********************************************************/
 
 
-/************** FOOTER *****************/
+
+/* BEGINING Footer ************************************************************/
 footer{
     display: block;
     height: 60px;
@@ -186,26 +205,22 @@ footer{
     letter-spacing: 1px;
     position: relative;
 }
+/* END Footer *****************************************************************/
 
 
 
-
-
-
-
-
+/* BEGINING Breadcrumb ********************************************************/
 #breadcrumb{
     width: 100%;
-    list-style: none;
+    max-width: 1000px;
+    height: 50px;
+    margin: auto;
+    background-color: #444;
+    padding: 5px 10px 5px 10px;
     display: flex;
     align-items: center;
-    margin: 0;
-    padding: 5px 10px 5px 10px;
-    height: 50px;
-    background-color: #444;
+    list-style: none;
     font-size: 16px;
-    max-width: 1000px;
-    margin: auto;
 }
 #breadcrumb li{
     text-transform: uppercase;
@@ -214,7 +229,10 @@ footer{
     content: "/";
     padding: 5px;
 }
+/* END Breadcrumb *************************************************************/
 
+
+/* BEGINING Main (restaurant.html) ********************************************/
 #maincontent-restaurant{
     margin: 5px 10px 5px 10px;
     position: relative;
@@ -224,13 +242,14 @@ footer{
     margin-left: auto;
     margin-right: auto;
 }
+/* END Main (restaurant.html) *************************************************
 
-/********** RESTAURANT-CONTAINER **********/
+
+/* BEGINING Restaurant container (restaurant.html) ****************************/
 #restaurant-container figure{
     margin: 0;
     display: flex;
     flex-direction: column;
-    
     overflow: hidden;
 }
 #restaurant-container figure img{
@@ -278,6 +297,8 @@ footer{
 #restaurant-info span:first-of-type{
     font-weight: bold;
 }
+/* END Restaurant container (restaurant.html) *********************************/
+
 
 #btn-see-map{
     grid-column: 1 / 3;
@@ -289,8 +310,8 @@ footer{
 }
 
 
-/* TABLE restaurant-hours */
-#restaurant-hours{
+/* BEGINING restaurant-hours (table) ******************************************/
+    #restaurant-hours{
     border: 1px solid #555;
     width: 100%;
     margin-top: 10px;
@@ -306,11 +327,10 @@ footer{
 #restaurant-hours tr td:last-child{
     padding-left: 10px;
 }
+/* END restaurant-hours (table) ***********************************************/
 
 
-/* REVIEWS */
-
-/* HEADER from reviews */
+/* BEGINING Reviews ***********************************************************/
 #reviews-container h2{
     text-transform: uppercase;
     font-size: 1.3em;
@@ -333,18 +353,18 @@ footer{
     margin: 0;
     padding: 5px;
 }
-/* name */
+/* review's author */
 #reviews-list li p:first-child{
     font-weight: 700;
     font-size: 1.5em;
 }
-/* date */
+/* review date */
 #reviews-list li p:nth-child(2){
     color: #DBDBDB;
     text-transform: uppercase;
     font-size: .9em;
 }
-/* rating */
+/* review rating */
 #reviews-list li p:nth-child(3){
     display: flex;
     justify-content: center;
@@ -357,14 +377,16 @@ footer{
     font-size: 1.4em;
     color: #FFF000;
     
-    /* fix vertical align of the stars*/
+    /* fix vertical align of the rating stars*/
     padding-bottom: 7px;
     padding-top: 3px;
 }
+/* END Reviews ****************************************************************/
 
 
-/*************** FIRST BREAKPOINT 600px **************/
+/* BEGINING Breakpoint 600px **************************************************/
 @media screen and (min-width: 600px){
+    /* BEGINING Filters *******************************************************/
     #filters{
         flex-direction: column;
         min-height: 200px;
@@ -373,6 +395,12 @@ footer{
         padding-top: 10px;
         width: 210px;
     }
+    /* filters header */
+    #filters h2{
+        visibility: visible;
+        position: relative;
+    }
+
     #filters select{
         width: 200px !important;
         margin-bottom: 20px;
@@ -381,6 +409,8 @@ footer{
         position: relative;
         top: auto;
     }
+    /* END Filters ************************************************************/
+
 
     /* restaurants list to two columns*/
     #restaurants-list{
@@ -425,11 +455,11 @@ footer{
         visibility: visible;
     }
 }
+/* END Breackpoint 600px *******************************************************/
 
 
-
-/*************** SECOND BREAKPOINT 950px **************/
-@media screen and (min-width: 950px){
+/* BEGINING Breakpoint 950px **************************************************/
+    @media screen and (min-width: 950px){
     #maincontent-index{
         padding-left: 10px; 
         padding-right: 10px; 
@@ -475,3 +505,4 @@ footer{
         border-top: 1px solid;
     }
 }
+/* END Breakpoint 950px *******************************************************/

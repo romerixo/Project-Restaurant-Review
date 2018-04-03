@@ -103,6 +103,12 @@ updateRestaurants = () => {
     if (error) { // Got an error!
       console.error(error);
     } else {
+      console.log(restaurants);
+      // check if there are not any restaurant
+      if(restaurants.length == 0){
+
+      }
+
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
     }
@@ -128,6 +134,13 @@ resetRestaurants = (restaurants) => {
  * Create all restaurants HTML and add them to the webpage.
  */
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
+  // check if there is any restaurant
+  if(restaurants.length == 0){
+    document.getElementById('no-restaurant-found').removeAttribute('hidden');
+    return;
+  }
+  document.getElementById('no-restaurant-found').setAttribute('hidden', null);
+
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
@@ -143,6 +156,8 @@ createRestaurantHTML = (restaurant) => {
 
   const more = document.createElement('a');
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.setAttribute('aria-label', `Read more about ${restaurant.name}'s restaurant`);
+  //more.setAttribute('aria-describedby', );
   li.append(more)
 
   const image = document.createElement('img');
@@ -163,6 +178,7 @@ createRestaurantHTML = (restaurant) => {
   // cuisine type
   const cuisine = document.createElement('span');
   cuisine.className = 'cuisine-type';
+  cuisine.setAttribute('aria-label', 'Cuisine type');
   cuisine.innerHTML = restaurant.cuisine_type;
   more.append(cuisine);
 
@@ -171,18 +187,24 @@ createRestaurantHTML = (restaurant) => {
   info.className = "restaurant-info";
   more.append(info);
 
+  // restaurant name
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
+  name.setAttribute('aria-label', 'Restaurant name');
   info.append(name);
 
+  // neighborhood
   const neighborhood = document.createElement('span');
   neighborhood.className = "restaurant-neighborhood";
   neighborhood.innerHTML = restaurant.neighborhood;
+  neighborhood.setAttribute('aria-label', 'Restaurant neighborhood');
   info.append(neighborhood);
 
+  // address
   const address = document.createElement('span');
   address.className = "restaurant-address";
   address.innerHTML = restaurant.address;
+  address.setAttribute('aria-label', 'Restaurant address');
   info.append(address);
 
   return li

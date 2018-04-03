@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -13,22 +13,22 @@
 </head>
 
 <body>
-  <header>
-    <nav>
+  <header role="banner">
+    <nav role="navigation">
       <h1><a id="title" href="/">Restaurant Reviews</a></h1>
     </nav>
   </header>
 
-  <main id="maincontent-index">
+  <main role="main" id="maincontent-index">
       <div id="filters">
-        
+        <h2>Filter restaurants by:</h2>
         <label for="neighborhoods-select">Neighborhoods:</label>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+        <select aria-label="Select a neighborhood" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All neighborhoods</option>
         </select>
         
         <label for="cuisines-select">Cuisines:</label>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+        <select aria-label="Select a cuisine" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All cuisines</option>
         </select>
         
@@ -39,16 +39,26 @@
     </section>
 
     <section id="restaurants-list-container">
+      <p id="no-restaurant-found" hidden>No restaurant was found.</p>
+
       <ul id="restaurants-list"></ul>
     </section>
   </main>
-  
+
+
+  <!-- Database helpers -->
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
+
+  <!-- Main javascript file -->
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+
+  <!-- Responsive Features -->
   <script type="application/javascript" charset="utf-8" src="js/responsive.js"></script>
+
+  <!-- Google Maps -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS55fy6liCeRXsveBpo3TPwjsN5w9eWh0&libraries=places&callback=initMap"></script>
 
-  <footer id="footer">
+  <footer role="contentinfo" id="footer">
     <span>&copy;</span> 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 

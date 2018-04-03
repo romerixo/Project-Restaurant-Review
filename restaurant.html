@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -15,20 +15,22 @@
 
 <body class="inside">
 
-  <header>
+  <header role="banner">
 
-    <nav>
+    <nav role="navigation">
       <h1><a id="title" href="/">Restaurant Reviews</a></h1>
     </nav>
 
-    <ul id="breadcrumb">
-      <li><a href="/">Home</a></li>
-    </ul>
+    <nav role="navigation" aria-label="Breadcrumb" >
+      <ul id="breadcrumb">
+        <li><a href="/">Home</a></li>
+      </ul>
+    </nav>
 
   </header>
 
 
-  <main id="maincontent-restaurant">
+  <main role="main" id="maincontent-restaurant">
 
     <section id="restaurant-container">
       <figure>
@@ -49,7 +51,7 @@
         <button id="btn-see-map" onclick="mapToggleHidden()">See on Map</button>
       </div>      
 
-      <div id="map-container-restaurant" class="hidden-map">
+      <div aria-hidden="true" id="map-container-restaurant" class="hidden-map">
         <div id="map"></div>
       </div>
 
@@ -65,7 +67,7 @@
   </main>
 
 
-  <footer id="footer">
+  <footer role="contentinfo" id="footer">
     <span>&copy;</span> 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
@@ -73,10 +75,13 @@
 
   <!-- Database helpers -->
   <script type="text/javascript" src="js/dbhelper.js"></script>
+
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
+
   <!-- Responsive Features -->
   <script type="text/javascript" src="js/responsive.js"></script>
+  
   <!-- Google Maps -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS55fy6liCeRXsveBpo3TPwjsN5w9eWh0&libraries=places&callback=initMap"></script>
 
