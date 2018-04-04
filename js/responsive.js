@@ -1,17 +1,32 @@
-//
-//  btn-show-map toogle hidden
-//
+/**
+ * ServiceWorker registration
+ */
+if('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+        navigator.serviceWorker.register('/sw.js').then(function(registration){
+            // registration successful
+            console.log(`ServiceWorker was registred with scope ${registration.scope}`);
+        }).catch(function(err){
+            // registration failed
+            console.log('ServiceWorker registration failed:', err);
+        });
+        
+    });
+}
+
+
+/**
+ * btn-show-map toogle to hidden
+ */
 function mapToggleHidden(){
     const mapContainer = document.getElementById('map-container-restaurant');
     mapContainer.classList.toggle('hidden-map');
 }
-//
-//******************************************************************************
-//
 
-//
-// Fixed on top when element off screen on scrolling ***************************
-//
+
+/**
+ * Fixed on top when element off screen on scrolling
+ */
 function keepOnTop(elm, nextElm, fullWidth){
     // top position of the element on CLIENT (< 0 begin no visible)
     const elementTop = elm.offsetTop;
@@ -32,13 +47,21 @@ function keepOnTop(elm, nextElm, fullWidth){
     window.onscroll = __check;
     window.onresize = __check;
 }
-//
-//******************************************************************************
-//
 
-//
-// Auxiliar class to help control focus strategy *******************************
-//
+const filters = document.getElementById('filters');
+const nextToFilters = document.getElementById('map-container');
+
+const breadcrumb = document.getElementById('breadcrumb');
+const nextToBreadcrumb = document.getElementById('maincontent-restaurant');
+
+if(filters)
+    keepOnTop(filters, nextToFilters);
+if(breadcrumb)
+    keepOnTop(breadcrumb, nextToBreadcrumb, true);
+
+/**
+ * Auxiliar class to help control focus
+ */
 class Focus{
     constructor(){
         this._query = `
@@ -129,26 +152,13 @@ class Focus{
         document.removeEventListener('keydown', this.callback);
     }
 }
-//
-//******************************************************************************
-//
 
 
-// ***************** MAIN ********************
-const filters = document.getElementById('filters');
-const nextToFilters = document.getElementById('map-container');
-
-const breadcrumb = document.getElementById('breadcrumb');
-const nextToBreadcrumb = document.getElementById('maincontent-restaurant');
-
-if(filters)
-    keepOnTop(filters, nextToFilters);
-if(breadcrumb)
-    keepOnTop(breadcrumb, nextToBreadcrumb, true);
-
-
-// Controlling the FOCUS
+/**
+ * Controlling the FOCUS
+ */
 const focus = new Focus();
 focus.reload = true;
 focus.remove(document.getElementById('map'));
 focus.start();
+

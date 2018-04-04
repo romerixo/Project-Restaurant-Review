@@ -82,7 +82,7 @@ window.initMap = () => {
     scrollwheel: false
   });
 
-  updateRestaurants();
+  //updateRestaurants(); // fail when offline
 }
 
 
@@ -103,17 +103,15 @@ updateRestaurants = () => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      console.log(restaurants);
-      // check if there are not any restaurant
-      if(restaurants.length == 0){
-
-      }
-
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
     }
   })
 }
+
+// First Restaurants load
+updateRestaurants();
+
 
 /**
  * Clear current restaurants, their HTML and remove their map markers.
