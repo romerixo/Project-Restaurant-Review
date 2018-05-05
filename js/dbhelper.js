@@ -8,29 +8,45 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 80 // Change this to your server port
+    const port = 1337 // Change this to your server port
 
-    return `http://localhost:${port}/data/restaurants.json`;
+    return `http://localhost:${port}/restaurants`;
   }
+
+  // ( OLD )
+  // /**
+  //  * Fetch all restaurants.
+  //  */
+  // static fetchRestaurants(callback) {
+  //   let xhr = new XMLHttpRequest();
+  //   xhr.open('GET', DBHelper.DATABASE_URL);
+  //   xhr.onload = () => {
+  //     if (xhr.status === 200) { // Got a success response from server!
+  //       const json = JSON.parse(xhr.responseText);
+  //       const restaurants = json.restaurants;
+  //       callback(null, restaurants);
+  //     } else { // Oops!. Got an error from server.
+  //       const error = (`Request failed. Returned status of ${xhr.status}`);
+  //       callback(error, null);
+  //     }
+  //   };
+  //   xhr.send();
+  // }
 
   /**
-   * Fetch all restaurants.
+   * Fetch all restaurants from Server API with fetch().
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    fetch(DBHelper.DATABASE_URL)
+    .then(res => {
+      if(res.status === 200)
+        return res.json();
+      else
+        callback(`Request failed. Returned status of ${res.status}`, null);
+    })
+    .then(restJson => callback(null, restJson)); // restJson = Restaurants on JSON format
   }
+
 
   /**
    * Fetch a restaurant by its ID.
