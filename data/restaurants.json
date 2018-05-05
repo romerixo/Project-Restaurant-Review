@@ -3,7 +3,6 @@
     "id": 1,
     "name": "Mission Chinese Food",
     "neighborhood": "Manhattan",
-    "photograph": "1-large.jpg",
     "photograph": {
       "large_2x": "1-large-2x.jpg",
       "large": "1-large.jpg",
