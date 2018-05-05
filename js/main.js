@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 /**
+ * Show restaurants when all is loaded
+ */
+window.addEventListener('load', () => {
+  updateRestaurants();
+});
+
+/**
  * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
@@ -85,7 +92,6 @@ window.initMap = () => {
   //updateRestaurants(); // fail when offline
 }
 
-
 /**
  * Update page and map for current restaurants.
  */
@@ -108,10 +114,6 @@ updateRestaurants = () => {
     }
   })
 }
-
-// First Restaurants load
-updateRestaurants();
-
 
 /**
  * Clear current restaurants, their HTML and remove their map markers.
@@ -143,6 +145,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+
   addMarkersToMap();
 }
 
