@@ -45,17 +45,14 @@ class DBHelper {
    * Fetch all restaurants from Server API with fetch().
    */
   static fetchRestaurants(callback) {
-    console.log("fetchRestaurants (fetch method)");
     fetch(DBHelper.DATABASE_URL)
     .then(res => {
-      console.log("Response status:", res.status);
       if(res.status === 200)
         return res.json();
       else
         callback(`Request failed. Returned status of ${res.status}`, null);
     })
     .then(json => {
-      console.log("JSON:", json);
       callback(null, json)
     }); // json = Restaurants on JSON format
   }
