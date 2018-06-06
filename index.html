@@ -11,6 +11,28 @@
   <link rel="stylesheet" href="css/responsive.css">
   
   <title>Restaurant Reviews</title>
+
+  <style>
+    /**
+    * Lazy Load Images Fading In
+    */
+    img.restaurant-img{
+      opacity: 0;
+    }
+    img.restaurant-img:not(.initial) {
+      transition: opacity 1s;
+    }
+    img.restaurant-img.initial,
+    img.restaurant-img.loaded,
+    img.restaurant-img.error {
+      opacity: 1;
+    }
+
+    #restaurant-list img:not([src]) {
+      visibility: hidden;
+    }
+    /***********************************
+  </style>
 </head>
 
 <body>
@@ -55,6 +77,15 @@
 
   <!-- Responsive Features -->
   <script type="application/javascript" charset="utf-8" src="js/responsive.js"></script>
+
+  <!-- Lazy Load Images -->
+  <script type="application/javascript" charset="utf-8" src="js/lazyload.min.js"></script>
+  <script>
+      const lazyload = new LazyLoad({
+        elements_selector: '.lazy',
+        threshold: 0
+      });
+  </script>
 
   <!-- Google Maps -->
   <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS55fy6liCeRXsveBpo3TPwjsN5w9eWh0&libraries=places&callback=initMap"></script>

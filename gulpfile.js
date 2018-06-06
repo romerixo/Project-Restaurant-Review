@@ -23,9 +23,9 @@ gulp.task('images', function(){
     gulp.src('img_src/*')
     .pipe(responsive({
         '*': [
-            {width: 1600, rename: {suffix: '-large-2x'}, quality: 80},
-            {width: 800, rename: {suffix: '-large'}, quality: 60},
-            {width: 460, rename: {suffix: '-medium'}, quality: 60},
+            {width: 1600, rename: {suffix: '-large-2x', extname: '.webp'}, quality: 80},
+            {width: 800, rename: {suffix: '-large', extname: '.webp'}, quality: 60},
+            {width: 460, rename: {suffix: '-medium', extname: '.webp'}, quality: 60},
         ]
     },{
         // default values
@@ -33,6 +33,6 @@ gulp.task('images', function(){
         progressive: true,
         errorOnEnlargement: false,
     }))
-    .pipe(gulp.dest('dist/img'))
+    .pipe(gulp.dest('img'))
 });
 

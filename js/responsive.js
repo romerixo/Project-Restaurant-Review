@@ -161,4 +161,3 @@ const focus = new Focus();
 focus.reload = true;
 focus.remove(document.getElementById('map'));
 focus.start();
-
