@@ -14,6 +14,12 @@ gulp.task('copy-html', function(){
     .pipe(gulp.dest('./dist/'))
 });
 
+gulp.task('copy-manifest', function(){
+    gulp.src('./manifest.json')
+    .pipe(gzip())
+    .pipe(gulp.dest('./dist/'))
+});
+
 gulp.task('copy-js', function(){
     gulp.src('./*.js')
     .pipe(babel({presets: ['env']}))
@@ -67,6 +73,7 @@ gulp.task('dist', function(){
     runSequence(
         'clean-dist',     
         'copy-html', 
+        'copy-manifest', 
         'copy-js', 
         'compress-css', 
         'compress-js', 
