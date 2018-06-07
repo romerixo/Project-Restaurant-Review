@@ -8,6 +8,13 @@ const gulp = require('gulp'),
     babel = require('gulp-babel');
 
 
+const dirs = {
+    dev: '.',
+    prod: './dist'
+}
+
+let target = dirs.prod; // DEFAULT MODE
+
 gulp.task('copy-html', function(){
     gulp.src('./*.html')
     .pipe(gzip())
@@ -56,12 +63,12 @@ gulp.task('responsive-img', function(){
         progressive: true,
         errorOnEnlargement: false,
     }))
-    .pipe(gulp.dest('./dist/img/'))
+    .pipe(gulp.dest(`${target}/img/`))
 });
 
 gulp.task('fixed-img', function(){
     gulp.src('./img_src/fixed/*')
-    .pipe(gulp.dest('./dist/img/'));
+    .pipe(gulp.dest(`${target}/img/`));
 });
 
 gulp.task('clean-dist', function(){
@@ -69,7 +76,12 @@ gulp.task('clean-dist', function(){
     .pipe(clean({read: false, force: true}))
 });
 
-gulp.task('dist', function(){
+gulp.task('clean-img', function(){
+    return gulp.src(`${target}/img/*`)
+    .pipe(clean({read: false, force: true}))
+});
+
+gulp.task('build:dist', function(){
     runSequence(
         'clean-dist',     
         'copy-html', 
@@ -80,4 +92,9 @@ gulp.task('dist', function(){
         'responsive-img', 
         'fixed-img'
     );
+});
+
+gulp.task('build', function(){
+    target = dirs.dev;
+    runSequence('clean-img', 'responsive-img', 'fixed-img');
 });
