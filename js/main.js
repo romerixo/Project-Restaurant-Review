@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 /**
  * Show restaurants when all is loaded
  */
-window.addEventListener('load', () => {
-  updateRestaurants();
-});
+// window.addEventListener('load', () => {
+//   updateRestaurants();
+// });
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -89,7 +89,7 @@ window.initMap = () => {
     scrollwheel: false
   });
 
-  //updateRestaurants(); // fail when offline
+  addMarkersToMap();
 }
 
 /**
@@ -112,7 +112,9 @@ updateRestaurants = () => {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
     }
-  })
+  }).then(function(){
+    addMarkersToMap()
+  });
 }
 
 /**
@@ -148,8 +150,6 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 
   if(lazyload)
     lazyload.update();
-
-  addMarkersToMap();
 }
 
 /**
@@ -176,7 +176,7 @@ createRestaurantHTML = (restaurant) => {
   image.classList.add('lazy');
 
   // alternative text for better accesibility
-  image.alt = restaurant.name;
+  image.alt = `Restaurant ${restaurant.name}`;
 
   more.append(image);
   
@@ -193,7 +193,7 @@ createRestaurantHTML = (restaurant) => {
   more.append(info);
 
   // restaurant name
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   name.setAttribute('aria-label', 'Restaurant name');
   info.append(name);
@@ -219,6 +219,9 @@ createRestaurantHTML = (restaurant) => {
  * Add markers for current restaurants to the map.
  */
 addMarkersToMap = (restaurants = self.restaurants) => {
+  if(typeof restaurants === 'undefined' || typeof google === 'undefined')
+    return;
+
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
@@ -228,3 +231,5 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+
+updateRestaurants();

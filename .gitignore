@@ -3,3 +3,6 @@ doc/*
 
 # Scripts
 *.ps1
+
+# Node modules
+node_modules/

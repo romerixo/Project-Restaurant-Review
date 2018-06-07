@@ -168,7 +168,7 @@ header #title{
     padding: 5px;
 }
 /* restaurant-name */
-.restaurant-info h1{
+.restaurant-info h2{
     margin: 0;
     padding: 0;
     text-transform: uppercase;
@@ -269,14 +269,14 @@ footer{
     text-transform: uppercase;
 }
 /* DELETE ? */
-#restaurant-container h1
+/* #restaurant-container h1
 {
     width: 100%;
     margin: 0;
     padding: 10px;
     background-color: #000000;
     text-transform: uppercase;
-}
+} */
 
 
 #restaurant-info{
@@ -336,7 +336,7 @@ footer{
 
 
 /* BEGINING Reviews ***********************************************************/
-#reviews-container h2{
+#reviews-container h3{
     text-transform: uppercase;
     font-size: 1.3em;
     letter-spacing: 5px;

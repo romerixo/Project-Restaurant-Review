@@ -45,16 +45,14 @@ class DBHelper {
    * Fetch all restaurants from Server API with fetch().
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
+    return fetch(DBHelper.DATABASE_URL)
     .then(res => {
       if(res.status === 200)
         return res.json();
       else
         callback(`Request failed. Returned status of ${res.status}`, null);
     })
-    .then(json => {
-      callback(null, json)
-    }); // json = Restaurants on JSON format
+    .then(json => callback(null, json)); // json = Restaurants on JSON format
   }
 
   // ( OLD )
@@ -81,7 +79,7 @@ class DBHelper {
    * Fetch a restaurant by its ID using Server API.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`${DBHelper.DATABASE_URL}/${id}`)
+    return fetch(`${DBHelper.DATABASE_URL}/${id}`)
     .then(res => {
       if(res.status === 200)
         return res.json();
@@ -112,7 +110,7 @@ class DBHelper {
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    return DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -128,7 +126,7 @@ class DBHelper {
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    return DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
