@@ -32,6 +32,9 @@
         <li><a href="/">Home</a></li>
       </ul>
     </nav>
+
+    <!-- Used when APP is Offline-->
+    <div id="offline">Offline</div> 
   </header>
 
   <main role="main" id="maincontent-restaurant">
@@ -64,6 +67,19 @@
     </section>
 
     <section id="reviews-container">
+      <h3>Reviews</h3>
+      <form id="new-review-container" onsubmit="handleNewReview()"> 
+        <input id="new-review-author" type="text" placeholder="Author's name" />
+        <ul id="new-review-rating">
+          <li data-rating="5">☆</li>
+          <li data-rating="4">☆</li>
+          <li data-rating="3">☆</li>
+          <li data-rating="2">☆</li>
+          <li data-rating="1" class="fill">★</li>
+        </ul>
+        <textarea id="new-review-comment" type="text" rows="4" maxlength="300" placeholder="Type your review..."></textarea>
+        <input type="submit" value="Post" />
+      </form>
       <ul id="reviews-list"></ul>
     </section>
   </main>

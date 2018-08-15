@@ -6,3 +6,9 @@ doc/*
 
 # Node modules
 # node_modules/
+
+# Vim files
+*.vim
+
+# Task 
+TODO.md

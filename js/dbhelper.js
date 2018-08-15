@@ -14,12 +14,21 @@ class DBHelper {
   //   return `http://localhost:${port}/data/restaurants.json`;
   // }
 
-  static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
-
-    return `http://localhost:${port}/restaurants`;
+  static get PORT() {
+    return 1337;
   }
 
+  static get API_URL() {
+    return `http://localhost:${DBHelper.PORT}`;
+  }
+
+  static get RESTAURANTS_URL() {
+    return `${DBHelper.API_URL}/restaurants`;
+  }
+
+  static get REVIEWS_URL() {
+    return `${DBHelper.API_URL}/reviews`;    
+}
 
   // ( OLD )  
   // /**
@@ -45,7 +54,7 @@ class DBHelper {
    * Fetch all restaurants from Server API with fetch().
    */
   static fetchRestaurants(callback) {
-    return fetch(DBHelper.DATABASE_URL)
+    return fetch(DBHelper.RESTAURANTS_URL)
     .then(res => {
       if(res.status === 200)
         return res.json();
@@ -79,7 +88,7 @@ class DBHelper {
    * Fetch a restaurant by its ID using Server API.
    */
   static fetchRestaurantById(id, callback) {
-    return fetch(`${DBHelper.DATABASE_URL}/${id}`)
+    return fetch(`${DBHelper.RESTAURANTS_URL}/${id}`)
     .then(res => {
       if(res.status === 200)
         return res.json();
@@ -87,6 +96,17 @@ class DBHelper {
         callback('Restaurant does not exist', null);
     })
     .then(restJson => callback(null, restJson)); // resJson = Restaurant with id (param) on JSON format
+  }
+
+  /**
+   * @param {number} id Restaurant id
+   */
+  static fetchRestaurantReviews(id){
+    return fetch(`${DBHelper.REVIEWS_URL}/?restaurant_id=${id}`)
+    .then(res => {
+      if(res.status === 200)
+        return res.json();
+    });
   }
 
   /**
@@ -218,4 +238,24 @@ class DBHelper {
     return marker;
   }
 
+  /**
+   * @desc Create a new review
+   * @param {object} data Review data with de values:
+   *  - restaurant_id
+   *  - name
+   *  - comments
+   *  - rating
+   */
+  static newReview(data){
+    return fetch(DBHelper.REVIEWS_URL, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  static deleteReview(reviewId){
+    return fetch(`${DBHelper.REVIEWS_URL}/${reviewId}`, {
+      method: 'DELETE'
+    });
+  }
 }

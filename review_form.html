@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    #new-review-container{
+      width: 320px;
+      background-color: #333;
+    }
+
+    #new-review-container input,
+    #new-review-container ul
+    {
+      box-sizing: border-box;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+
+    #author{
+      min-width: 300px;
+      margin: 10px;
+      height: 30px;
+    }
+
+    #rating-selector {
+      border: 1px solid;
+      color: #FFF000;
+      list-style-type: none;
+      display: flex;
+      padding: 0;
+      width: 100px;
+      font-size: 1.4em;
+    }
+
+    #comment{
+      min-width: 300px;
+      min-height: 100px;
+    }
+
+    #new-review-container input[type="submit"]{
+      width: calc(100% - 20px);
+      height: 30px;
+    }
+  </style>
+</head>
+<body>
+  <form id="new-review-container">
+    <input id="author" type="text">
+    <ul id="rating-selector">
+      <li data-rating="1">☆</li>
+      <li data-rating="2">☆</li>
+      <li data-rating="3">☆</li>
+      <li data-rating="4">☆</li>
+      <li data-rating="5">☆</li>
+    </ul>
+    <input id="comment" type="text">
+    <input type="submit" value="Send">
+  </form>  
+
+  <script>
+    
+  </script>
+</body>
+</html>

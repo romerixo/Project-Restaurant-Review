@@ -76,7 +76,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fillReviewsHTML(restaurant.id);
 }
 
 /**
@@ -102,37 +102,41 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
-  const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
-
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
+fillReviewsHTML = (restaurantId) => {
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+  while(ul.firstChild)
+    ul.removeChild(ul.firstChild);
+
+  DBHelper.fetchRestaurantReviews(restaurantId)
+  .then(reviews => {
+     if(!reviews) {
+      const noReviews = document.createElement('p');
+      noReviews.innerHTML = 'No reviews yet!';
+      ul.appendChild(noReviews);
+      return;
+    } 
+
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
   });
-  container.appendChild(ul);
 }
 
 /**
  * Create review HTML and add it to the webpage.
  */
 createReviewHTML = (review) => {
+  const revRating = Number(review.rating);
   const li = document.createElement('li');
   const name = document.createElement('p');
   name.innerHTML = review.name;
-  name.setAttribute('aria-label', 'Authors\' name');
+  name.setAttribute('aria-label', 'Author\'s name');
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  // review.createdAt can fallback
+  const dateValue = review.createdAt || Date.now();
+  date.innerHTML = new Date(dateValue).toLocaleDateString("en-US", {month: 'long', day: 'numeric', year: 'numeric'});
   date.setAttribute('aria-label', 'Date of review publication');
   li.appendChild(date);
 
@@ -140,7 +144,7 @@ createReviewHTML = (review) => {
   let ratingStars = '';
   let ariaLabel = '';
 
-  switch(review.rating){
+  switch(revRating){
     case 1:
       ratingStars = '★☆☆☆☆';
       ariaLabel = 'Rating one out off five stars';
@@ -172,6 +176,18 @@ createReviewHTML = (review) => {
   comments.innerHTML = review.comments;
   comments.setAttribute('aria-label', 'Review');
   li.appendChild(comments);
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.innerHTML = 'Delete review';
+  deleteBtn.onclick = () => {
+    DBHelper.deleteReview(review.id).then(() => {
+      window.alert('The review has been deleted!');
+      fillReviewsHTML(self.restaurant.id);
+    }).catch(err => {
+      console.log(err);
+    });
+  };
+  li.appendChild(deleteBtn);
 
   return li;
 }
@@ -212,3 +228,69 @@ fetchRestaurantFromURL((error, restaurant) => {
   self.restaurant = restaurant;
   fillBreadcrumb();
 });
+
+/********************************************************************************
+ * New review form **************************************************************
+ *******************************************************************************/
+self.newReviewRating = 1; // Default value
+const rating = document.getElementById('new-review-rating');
+const stars = rating.querySelectorAll('#new-review-rating li');
+
+/**
+ * @desc Used for add a SIMPLE review returned from the API SERVER
+ */
+function addNewReview(review){
+  const ul = document.getElementById('reviews-list');
+  ul.appendChild(createReviewHTML(review));
+}
+
+/**
+ * @description Handle function for new review form on SUBMIT event.
+ */
+function handleNewReview(){
+  event.preventDefault();
+
+  const data = {};
+  data.name = document.getElementById('new-review-author').value.trim();
+  data.comments = document.getElementById('new-review-comment').value.trim();
+  data.rating = self.newReviewRating;
+  data.restaurant_id = self.restaurant.id;
+
+  // check empty data
+  if(!data.name || !data.comments){
+    window.alert('Error, empty data, please fill the fields');
+    return;
+  }
+
+  if('serviceWorker' in navigator && 'SyncManager' in window){
+    navigator.serviceWorker.ready.then(function(reg) {
+      return reg.sync.register('pending-reviews');
+    }).catch(function() {
+      // system was unable to register for a sync,
+      // this could be an OS-level restriction
+    });
+  }
+
+  console.log('Data for newReview:', data);
+  DBHelper.newReview(data).then(res => {
+    if(res.status === 201){
+      window.alert('New review has been created successfully!');
+      fillReviewsHTML(self.restaurant.id);
+    }
+  }).catch(err => {
+    console.log('CONNECTION ERROR:', err);
+  });  
+}
+
+/**
+ * Rate selector behaviour
+ */
+rating.onclick = () => {
+  self.newReviewRating = event.target.dataset.rating;
+  for(const star of stars){
+    if(star.dataset.rating <= self.newReviewRating)
+      star.classList.add('fill');
+    else
+      star.classList.remove('fill');
+  }
+}
