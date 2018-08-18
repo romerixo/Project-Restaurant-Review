@@ -1,6 +1,8 @@
 self.importScripts('idb.js');
 
+let dbPromise = null;
 const API_HOST = 'http://localhost:1337';
+const API_URL_REVIEWS = `${API_HOST}/reviews`;
 const CACHE_NAME = 'restaurant-review-cache-v1';
 const DB_NAME = 'offline-data';
 const DB_VERSION = 1; 
@@ -14,7 +16,11 @@ const urlsToCache = [
   '/restaurant.html'
 ];
 
-//************************** DB HELPERS ****************************************
+// Db Helpers ****************************************************************** 
+
+/**
+ * @desc Make DB
+ */
 function createDB(){
   // create-open indexedDB
   idb.open(DB_NAME, DB_VERSION, upgradeDB => {
@@ -27,6 +33,10 @@ function createDB(){
   console.log('db created!');
 }
 
+/**
+ * @desc Open db
+ * @return {Promise} Opened Db
+ */
 function openDB(){
   return idb.open(DB_NAME, DB_VERSION);
 }
@@ -34,9 +44,9 @@ function openDB(){
 /**
  * @description Return a promise with the Response object (restaurant JSON) or null if not exist.
  * 
- * @param {Promise} dbPromise - Promise with the opened DB
- * @param {String} url
- * @return {Promise} - Promise with <Response | null>
+ * @param {Promise} dbPromise Promise with the opened DB
+ * @param {String} url Path as key
+ * @return {Promise} Promise with <Response | null>
  */
 function getJSONDB(dbPromise, url){
   const path = url.pathname + url.search;
@@ -52,13 +62,12 @@ function getJSONDB(dbPromise, url){
       });
 }
 
+
 /**
  * @description Add entry to IndexedDB with the path and the response obtained from the fetch API
- *
- * @param {Promise} dbPromise - Promise with the opened DB
- * @param {String} url - 
- * @param {Blob} response 
- * @return {Promise} - Return a promise if the transaction was successful
+ * @param {object} dbPromise Promise with the opened DB
+ * @param {string} url Url from request
+ * @return {object} Return a promise if the transaction was successful
  */
 function addJSONDB(dbPromise, url, json){
   const path = url.pathname + url.search;
@@ -71,7 +80,6 @@ function addJSONDB(dbPromise, url, json){
     return tx.complete;
   });
 }
-
 
 
 /**
@@ -101,18 +109,28 @@ function addReviews(dbPromise, reviews){
   });
 }
 
+/**
+ * @desc Get reviews sotred in db by restaurant id
+ * @param {object} dbPromise Promise with opened Db
+ * @param {number} resId Restaurant id
+ */
 function getReviewsDB(dbPromise, resId){
   return dbPromise.then(db => 
     db.transaction('reviews').objectStore('reviews').getAll()
     .then(data => {
-      if(data)
-        data = data.filter(rev => rev.restaurant_id === resId);
+      if(data.length)
+        data = data[0].filter(rev => rev.restaurant_id === resId);
 
       return data;
     })
   );
 }
 
+/**
+ * @desc Get all reviews from Db
+ * @param {object} dbPromise Promise with the opened Db
+ * @param {number} resId Restaurant id
+ */
 async function getAllReviewsDB(dbPromise, resId){
   let reviews = await getReviewsDB(dbPromise, resId);
   reviews.concat(await getPendingReviews(dbPromise, resId));
@@ -135,27 +153,58 @@ function addPendingReview(dbPromise, review){
 }
 
 function getPendingReviews(dbPromise, resId=null){
-  return dbPromise.then(db => 
-    db.transaction('pending-reviews').objectStore('pending-reviews').getAll()
-    .then(data => {
-      if(data && resId)
-        data = data.filter(rev => rev.restaurant_id === resId);
-      
-      return data;
+  return dbPromise.then(db => {
+    const objectStore = db.transaction('pending-reviews').objectStore('pending-reviews');
+
+    return objectStore.getAll().then(reviews => {
+      if(reviews && resId)
+        reviews = reviews.filter(rev => {
+          console.log(rev.restaurant_id);
+          return rev.restaurant_id === resId;
+        });
+
+      return reviews;
     })
-  );
+  });
 }
-
-//******************************************************************************
-
 
 
 /**
- * Caching static elements on ServiceWorker installation
+ * @desc delete pending review register by primary key
+ * @param {object} dbPromise Opened database
+ * @param {number} key Primary key
  */
+function deletePendingReview(dbPromise, key){
+  return dbPromise.then(db => {
+    const objectStore = db.transaction('pending-reviews', 'readwrite').objectStore('pending-reviews');
+
+    return objectStore.delete(key);
+  });
+}
+
+
+/**
+ * @desc Get primary keys from pending reviews store
+ * @param {object} dbPromise Opened database
+ */
+function getPendingReviewsKeys(dbPromise){
+  return dbPromise.then(db => {
+    const objectStore = db.transaction('pending-reviews').objectStore('pending-reviews');
+
+    return objectStore.getAllKeys().then(keys => {
+      if(keys)
+        return keys;
+    })
+  });
+}
+
+// End Pending Reviews *********************************************************
+
+
+// Caching static elements on ServiceWorker installation
 self.addEventListener('install', function(evt){
   console.log('Installing ServiceWorker:', evt);
-
+  
   evt.waitUntil(
     caches.open(CACHE_NAME)
     .then(cache => cache.addAll(urlsToCache))
@@ -163,51 +212,79 @@ self.addEventListener('install', function(evt){
 
 });
 
-/**
- * @desc SYNC event
- */
+
 self.addEventListener('sync', function(evt){
-  if(evt.tag === 'update-reviews'){
+  const dbPromise = openDB();
+  console.log("Entrando en el evento sync");
+  if(evt.tag === 'pending-reviews'){
     console.log('Sync event fired!');
-    //evt.waitUntil(
-      
-    //);
+    
+    evt.waitUntil(
+      getPendingReviews(dbPromise).then(async pReviews => {
+        const pKeys = await getPendingReviewsKeys(dbPromise);
+
+        if(!pReviews || !pKeys){
+          throw new Error('No pending reviews to send');
+        }
+
+        for(let i = 0; i < pReviews.length; i++){
+          const response = await fetch(API_URL_REVIEWS, {
+            method: 'POST',
+            body: JSON.stringify(pReviews[i]),
+            headers: {'Content-type': 'application/json'}
+          });
+
+          if(response.status === 201){
+            // save review on reviews DB
+            response.json().then(review => addReviews(dbPromise, review));
+
+            // delete review from pending reviews on DB
+            deletePendingReview(dbPromise, pKeys[i]);
+            console.log("Pending review sended successfully!");
+          }
+          else{
+            console.log('Fail to create pending review from API');
+            return response;
+          }
+
+        }
+      })
+    );
   }
 });
 
-/**
- * Return cached requests and add new resources that are not cached (like images)
- */
-self.addEventListener('fetch', async function(evt){
+
+// Fetch event handling request
+self.addEventListener('fetch', function(evt){
+  const dbPromise = openDB();
   const request = evt.request;
   const url = new URL(request.url);
 
   // checking url for restaurant API
   if(url.origin === API_HOST){
-    const dbPromise = openDB(); // opening database
-
-    // Checking Pending Reviews
-    //getPendingReviews(dbPromise).then(reviews => {
-      //console.log('This are the pending reviews from sw.js:', reviews);
-    //});
-
+    
     // [POST] Match when creating new Review
     if(request.method === 'POST' && url.pathname ==='/reviews' && !url.search){
       evt.respondWith(
-        fetch(request.clone())
-        .then((response) => {
-          response.json().then(review => {
-            addReviews(dbPromise, review); // Add review to IDB
+        new Promise(function(resolve, reject){
+          const fetchPromise = fetch(request.clone()).then(response => {
+            if(response.status === 201){  // valid response
+              response.clone().json().then(review => {
+                addReviews(dbPromise, review); // Add review to IDB
+              });
+            }
+
+            resolve(response);
           });
-          
-          return response;
-        })
-        .catch(err => {
-          // handling no connection
-          console.log(err);
-          request.clone().json().then(review => {
-            addPendingReview(dbPromise, review);
-            return request;
+
+          fetchPromise.catch(() => {
+            console.log("Se produjo un error en el fetch hacia la API...");
+            request.json().then(review => {
+               addPendingReview(dbPromise, review);
+                                                                              
+               console.log("Respondiendo desde el error en SW con:", review);
+               resolve(new Response(JSON.stringify(review)));
+            });
           });
         })
       );
@@ -215,36 +292,39 @@ self.addEventListener('fetch', async function(evt){
 
     // [GET] Reviews by restaurant ID
     else if(request.method == 'GET' && url.pathname === '/reviews/' && /restaurant_id=\d+/.test(url.search)){
-      console.log('Dentro de [GET] Reviews');
-      const resId = url.search.match(/=(\d+)/)[1]; // Getting restaurant ID
+      const resId = Number(url.search.match(/=(\d+)/)[1]); // Getting restaurant ID
 
-      let reviews = await getReviewsDB(dbPromise, resId);
+      evt.respondWith(
+        getReviewsDB(dbPromise, resId)
+        .then(async reviews => {
+          console.log("Reviews on [GET]:", reviews)
+          if(!reviews.length){
+            try{
+              reviewsRes = await fetch(request);
+              reviews = await reviewsRes.json();
+              addReviews(dbPromise, reviews); // Adding new reviews to IDB!
+            }catch (err){
+              console.log("Error FETCHING reviews from API!");
+              reviews = [];
+            }
+          }
 
-      console.log(reviews);
+          const pendingReviews = await getPendingReviews(dbPromise, resId);
+          if(pendingReviews)
+            reviews = reviews.concat(pendingReviews);
 
-      if(!reviews.length){
-        console.log("Fetching reviews from api");
-        const reviewsRes = await fetch(request);
-        reviews = await reviewsRes.json();
-        addReviews(dbPromise, reviews);
-      }
-
-      reviews = reviews.concat(await getPendingReviews(dbPromise, resId));
-
-      // HERE got all Reviews
-      console.log("ALL reviews:", reviews);
-      evt.respondWith(new Response(reviews));
+          return new Response(JSON.stringify(reviews));
+        })
+      );
     }
     else{
       evt.respondWith(
         getJSONDB(dbPromise, url).then(json => {
           if(json){
-            //console.log('RESPONDING JSON FROM DB');
             return new Response(JSON.stringify(json));
           }
 
           return fetch(request).then(response => {
-            //console.log('RESPONDING JSON FROM FETCH:', response);
             const response2 = response.clone();
 
             // adding new JSON response to DB
@@ -268,8 +348,7 @@ self.addEventListener('fetch', async function(evt){
         const requestClone = request.clone();
 
         return fetch(requestClone).then(function(response){
-          // console.log('Trying to chache', response.clone());
-          // checking a valid response for caching
+          
           if(!response || response.status !== 200 || response.type !== 'basic'){
             return response;
           }
@@ -289,9 +368,8 @@ self.addEventListener('fetch', async function(evt){
   }  
 });
 
-/**
- * Deleting old caches on ServiceWorker Update
- */
+
+// Deleting old caches on ServiceWorker Update
 self.addEventListener('activate', function(evt){
   console.log('Activating ServiceWorker, Event:', evt);
 
@@ -309,3 +387,4 @@ self.addEventListener('activate', function(evt){
     })
   );
 });
+

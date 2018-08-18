@@ -250,6 +250,9 @@ class DBHelper {
     return fetch(DBHelper.REVIEWS_URL, {
       method: 'POST',
       body: JSON.stringify(data)
+    })
+    .catch(err => {
+      console.log("Error on DBHelper:", err);
     });
   }
 

@@ -115,6 +115,14 @@ fillReviewsHTML = (restaurantId) => {
       ul.appendChild(noReviews);
       return;
     } 
+    
+    // Sort reviews
+    reviews.sort((a, b) => {
+      if(a.createdAt > b.createdAt)
+        return -1;
+      else
+        return 1;
+    });
 
     reviews.forEach(review => {
       ul.appendChild(createReviewHTML(review));
@@ -241,7 +249,7 @@ const stars = rating.querySelectorAll('#new-review-rating li');
  */
 function addNewReview(review){
   const ul = document.getElementById('reviews-list');
-  ul.appendChild(createReviewHTML(review));
+  ul.insertBefore(createReviewHTML(review), ul.firstChild);
 }
 
 /**
@@ -250,11 +258,15 @@ function addNewReview(review){
 function handleNewReview(){
   event.preventDefault();
 
+  const author = document.getElementById('new-review-author');
+  const comment = document.getElementById('new-review-comment');
+
   const data = {};
-  data.name = document.getElementById('new-review-author').value.trim();
-  data.comments = document.getElementById('new-review-comment').value.trim();
+  data.name = author.value.trim();
+  data.comments = comment.value.trim();
   data.rating = self.newReviewRating;
   data.restaurant_id = self.restaurant.id;
+  data.createdAt = Date.now();
 
   // check empty data
   if(!data.name || !data.comments){
@@ -262,24 +274,43 @@ function handleNewReview(){
     return;
   }
 
-  if('serviceWorker' in navigator && 'SyncManager' in window){
-    navigator.serviceWorker.ready.then(function(reg) {
-      return reg.sync.register('pending-reviews');
-    }).catch(function() {
-      // system was unable to register for a sync,
-      // this could be an OS-level restriction
-    });
-  }
-
   console.log('Data for newReview:', data);
   DBHelper.newReview(data).then(res => {
+
     if(res.status === 201){
       window.alert('New review has been created successfully!');
-      fillReviewsHTML(self.restaurant.id);
+      res.json().then(review => addNewReview(review)); // Add new returned review
     }
-  }).catch(err => {
-    console.log('CONNECTION ERROR:', err);
-  });  
+    else if(res.status === 200){
+      window.alert('Connection error, the review will be sended when the Network available');
+      res.json().then(review => addNewReview(review)); // Add new returned review
+      
+      // Send sync request to update when conecction is available
+      if('serviceWorker' in navigator && 'SyncManager' in window){
+        console.log("Enviando evento sync...");
+        navigator.serviceWorker.ready.then(function(reg) {
+          return reg.sync.register('pending-reviews')
+          .then(e=>console.log('el evento se registro con exito'));
+        }).catch(function() {
+          // system was unable to register for a sync,
+          // this could be an OS-level restriction
+          console.log("...error en el envio del evento sync");
+        });
+      }
+    }
+  })
+
+  // Cleaning inputs
+  author.value = '';
+  comment.value = '';
+  // restart the rating
+  const stars = document.querySelectorAll("#new-review-rating li");
+  stars.forEach(star => {
+    if(star.dataset.rating !== '1')
+      star.classList.remove('fill');
+  });
+  self.newReviewRating = 1;
+
 }
 
 /**
