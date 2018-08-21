@@ -185,17 +185,18 @@ createReviewHTML = (review) => {
   comments.setAttribute('aria-label', 'Review');
   li.appendChild(comments);
 
-  const deleteBtn = document.createElement('button');
-  deleteBtn.innerHTML = 'Delete review';
-  deleteBtn.onclick = () => {
-    DBHelper.deleteReview(review.id).then(() => {
-      window.alert('The review has been deleted!');
-      fillReviewsHTML(self.restaurant.id);
-    }).catch(err => {
-      console.log(err);
-    });
-  };
-  li.appendChild(deleteBtn);
+// TODO: Uncomment for testing
+//  const deleteBtn = document.createElement('button');
+//  deleteBtn.innerHTML = 'Delete review';
+//  deleteBtn.onclick = () => {
+//    DBHelper.deleteReview(review.id).then(() => {
+//      window.alert('The review has been deleted!');
+//      fillReviewsHTML(self.restaurant.id);
+//    }).catch(err => {
+//      console.log(err);
+//    });
+//  };
+//  li.appendChild(deleteBtn);
 
   return li;
 }
@@ -243,6 +244,7 @@ fetchRestaurantFromURL((error, restaurant) => {
 self.newReviewRating = 1; // Default value
 const rating = document.getElementById('new-review-rating');
 const stars = rating.querySelectorAll('#new-review-rating li');
+const lblStars = document.getElementById('new-review-rating-label');
 
 /**
  * @desc Used for add a SIMPLE review returned from the API SERVER
@@ -290,11 +292,7 @@ function handleNewReview(){
         console.log("Enviando evento sync...");
         navigator.serviceWorker.ready.then(function(reg) {
           return reg.sync.register('pending-reviews')
-          .then(e=>console.log('el evento se registro con exito'));
-        }).catch(function() {
-          // system was unable to register for a sync,
-          // this could be an OS-level restriction
-          console.log("...error en el envio del evento sync");
+          .then(e => console.log('Sync event registered!'));
         });
       }
     }
@@ -304,7 +302,6 @@ function handleNewReview(){
   author.value = '';
   comment.value = '';
   // restart the rating
-  const stars = document.querySelectorAll("#new-review-rating li");
   stars.forEach(star => {
     if(star.dataset.rating !== '1')
       star.classList.remove('fill');
@@ -316,6 +313,48 @@ function handleNewReview(){
 /**
  * Rate selector behaviour
  */
+function handleRatingKeys(){
+  const kCode = event.keyCode;
+  let pointer = self.newReviewRating;
+
+
+  if(kCode === 37){ // Left
+    if(pointer === 1)
+      return;
+
+    pointer--;
+    self.newReviewRating = pointer;
+
+    stars.forEach(star => star.classList.remove('fill')); // Clear fill
+
+    stars.forEach((star, idx) => {
+      if(idx < pointer)
+        star.classList.add('fill');
+      else
+        star.classList.remove('fill');
+    });
+  }
+
+  if(kCode === 39){ // Right
+    if(pointer === 5)
+      return;
+
+    pointer++;
+    self.newReviewRating = pointer;
+
+    stars.forEach(star => star.classList.remove('fill')); // Clear fill
+
+    stars.forEach((star, idx) => {
+      if(idx < pointer)
+        star.classList.add('fill');
+      else
+        star.classList.remove('fill');
+    });
+  }
+
+  lblStars.firstChild.nodeValue = `Rating (${self.newReviewRating} Stars)`;
+}
+
 rating.onclick = () => {
   self.newReviewRating = event.target.dataset.rating;
   for(const star of stars){
@@ -324,4 +363,6 @@ rating.onclick = () => {
     else
       star.classList.remove('fill');
   }
+
+  lblStars.firstChild.nodeValue = `Rating (${self.newReviewRating} Stars)`;  
 }

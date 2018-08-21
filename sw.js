@@ -54,7 +54,6 @@ function getJSONDB(dbPromise, url){
   return dbPromise.then(db => 
     db.transaction('json-data').objectStore('json-data').get(path))
       .then(data => {
-        //console.log(data);
         if(typeof data === 'undefined')
           return null;
 
@@ -95,13 +94,11 @@ function addReviews(dbPromise, reviews){
 
     tx.objectStore('reviews').get(resId)
     .then(reviewsDb => {
-      console.log('reviewsDb:', reviewsDb);
       // UPDATING AN EXISTENT REVIEWS
       if(!reviewsDb)
         reviewsDb = [];
       
       reviewsDb = reviewsDb.concat(reviews);
-      console.log('reviewsDb:', reviewsDb);
       tx.objectStore('reviews').put(reviewsDb, resId);
     })
 
@@ -140,18 +137,24 @@ async function getAllReviewsDB(dbPromise, resId){
 
 // Pending Reviews ***************************************************************
 /**
- * @desc
+ * @desc Add review into pending-reviews store to send it afterwards
+ * @param {object} dbPromise opened Db
+ * @param {object} review review to save
  */
 function addPendingReview(dbPromise, review){
   return dbPromise.then(db => {
     const tx = db.transaction('pending-reviews', 'readwrite');
-    console.log('PUTTING ON DB PENDING-REVIEWS:', review);
     tx.objectStore('pending-reviews').put(review);
 
     return tx.complete;
   });
 }
 
+/**
+ * @desc Get all pending reviews if resId is null, else get by restaurant id
+ * @param {object} dbPromise opened Db
+ * @param {object} resId restaurant ID
+ */
 function getPendingReviews(dbPromise, resId=null){
   return dbPromise.then(db => {
     const objectStore = db.transaction('pending-reviews').objectStore('pending-reviews');
@@ -159,7 +162,6 @@ function getPendingReviews(dbPromise, resId=null){
     return objectStore.getAll().then(reviews => {
       if(reviews && resId)
         reviews = reviews.filter(rev => {
-          console.log(rev.restaurant_id);
           return rev.restaurant_id === resId;
         });
 
@@ -213,11 +215,11 @@ self.addEventListener('install', function(evt){
 });
 
 
+// Event sync is fired when a new review is created, checking old pending reviews for sending.
 self.addEventListener('sync', function(evt){
   const dbPromise = openDB();
-  console.log("Entrando en el evento sync");
   if(evt.tag === 'pending-reviews'){
-    console.log('Sync event fired!');
+    console.log('Trying to send pending reviews...');
     
     evt.waitUntil(
       getPendingReviews(dbPromise).then(async pReviews => {
@@ -278,11 +280,9 @@ self.addEventListener('fetch', function(evt){
           });
 
           fetchPromise.catch(() => {
-            console.log("Se produjo un error en el fetch hacia la API...");
             request.json().then(review => {
                addPendingReview(dbPromise, review);
                                                                               
-               console.log("Respondiendo desde el error en SW con:", review);
                resolve(new Response(JSON.stringify(review)));
             });
           });

@@ -69,15 +69,21 @@
     <section id="reviews-container">
       <h3>Reviews</h3>
       <form id="new-review-container" onsubmit="handleNewReview()"> 
-        <input id="new-review-author" type="text" placeholder="Author's name" />
-        <ul id="new-review-rating">
-          <li data-rating="5">☆</li>
-          <li data-rating="4">☆</li>
-          <li data-rating="3">☆</li>
-          <li data-rating="2">☆</li>
-          <li data-rating="1" class="fill">★</li>
-        </ul>
-        <textarea id="new-review-comment" type="text" rows="4" maxlength="300" placeholder="Type your review..."></textarea>
+        <label>Author
+          <input id="new-review-author" type="text" placeholder="Author's name" />
+        </label>
+        <label id="new-review-rating-label">Rating (1 Stars)
+          <ul id="new-review-rating" tabindex="0" onkeydown="handleRatingKeys()">
+            <li data-rating="1" class="fill">☆</li>
+            <li data-rating="2">☆</li>
+            <li data-rating="3">☆</li>
+            <li data-rating="4">☆</li>
+            <li data-rating="5">☆</li>
+          </ul>
+        </label>
+        <label>Comment
+          <textarea id="new-review-comment" type="text" rows="4" maxlength="300" placeholder="Type your review..."></textarea>
+        </label>
         <input type="submit" value="Post" />
       </form>
       <ul id="reviews-list"></ul>

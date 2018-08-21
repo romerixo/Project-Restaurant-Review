@@ -381,8 +381,6 @@ footer{
   padding: 0;
   max-width: 100px;
   position: relative;
-  unicode-bidi: bidi-override;
-  direction: rtl;
 }
 #new-review-rating li{
   font-size: 1.4em;
@@ -390,9 +388,7 @@ footer{
   margin-top: -3px;
   cursor: pointer;
 }
-#new-review-rating li.fill:before,
-#new-review-rating li:hover:before,
-#new-review-rating li:hover ~ li:before
+#new-review-rating li.fill:before
 {
   color: #FFF000;
   content: "\2605";
@@ -402,11 +398,9 @@ footer{
   min-width: 300px;
   min-height: 100px;
 }
-
-#new-review-container input[type="submit"]{
-
+#new-review-container label{
+  padding-left: 10px;
 }
-
 
 
 #reviews-container h3{
