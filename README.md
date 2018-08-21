@@ -20,6 +20,9 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 3. Explore the provided code, and make start making a plan to implement the required features in three areas: responsive design, accessibility and offline use.
 4. Write code to implement the updates to get this site on its way to being a mobile-ready website.
 
+### Note Backend Server
+You will need to use from my repository <https://github.com/romerixo/mws-restaurant-stage-3> the backend server since I modified the file `localDiskDb.db` from `.tmp` folder, or simply replace the file in your backend server with mine (<https://github.com/romerixo/mws-restaurant-stage-3/blob/master/.tmp/localDiskDb.db>).
+
 ### Note about ES6
 
 Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
