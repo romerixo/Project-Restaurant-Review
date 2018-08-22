@@ -157,6 +157,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  li.dataset.restaurantId = restaurant.id;
 
   const more = document.createElement('a');
   more.href = DBHelper.urlForRestaurant(restaurant);
@@ -211,6 +212,15 @@ createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   address.setAttribute('aria-label', 'Restaurant address');
   info.append(address);
+
+  // favorite
+  const favorite = document.createElement('div');
+  favorite.classList.add('favorite');
+  // fix error on saved format on backend server
+  const isFavorite = (restaurant.is_favorite === true || restaurant.is_favorite === 'true'); 
+  favorite.innerHTML = (isFavorite) ? '♥' : '♡';
+  favorite.onclick = handleFavoriteClick; // From responsive.js (common script)
+  li.append(favorite);
 
   return li
 }

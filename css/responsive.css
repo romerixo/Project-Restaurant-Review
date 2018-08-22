@@ -210,6 +210,31 @@ header #title{
     padding-right: 5px;
     color: #71C6FF;
 }
+.favorite{
+  width: 35px;
+  height: 35px;
+  font-size: 2.5em;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 3px;
+}
+.favorite:hover:after{
+  height: 35px;
+  display: flex;
+  align-items: center;
+  content: "Favorite";
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
 /* END Restaurant list ********************************************************/
 
 

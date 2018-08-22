@@ -63,10 +63,11 @@
         <select aria-label="Select a cuisine" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All cuisines</option>
         </select>
+        <label><input type="checkbox" id="onlyfavorites" onclick="handleOnlyFavorites()">Only favorites</label>
         
       </div>
 
-    <section id="map-container" aria-hidden="true">
+    <section id="map-container" role="application">
       <div id="map"></div>
     </section>
 

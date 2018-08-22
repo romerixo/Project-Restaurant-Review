@@ -2,30 +2,23 @@
 ---
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
-## Project Overview: Stage 1
+## Project Overview: Stage 3
 
-For the **Restaurant Reviews** projects, you will incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, you will take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. You will also add a service worker to begin the process of creating a seamless offline experience for your users.
+- The project is only tested on ***Google Chrome***.
+- The format used for the images is **WebP** which is unsupported by ***Mozilla Firefox*** and [others](https://caniuse.com/#feat=webp).
+- Offline capabilities are performed with IndexedDB API through [Jake Archibald's IndexedDB Promised library](https://github.com/jakearchibald/idb). This is done with the **Service Worker** in `sw.js`.
 
-### Specification
+## Set Up
+1. Clone or download from my repo [Project-Restaurant-Review](https://github.com/romerixo/Project-Restaurant-Review) with `git clone https://github.com/romerixo/Project-Restaurant-Review.git`.
 
-You have been provided the code for a restaurant reviews website. The code has a lot of issues. It’s barely usable on a desktop browser, much less a mobile device. It also doesn’t include any standard accessibility features, and it doesn’t work offline at all. Your job is to update the code to resolve these issues while still maintaining the included functionality. 
+2. Clone or download from my repo [mws-restaurant-stage-3](https://github.com/romerixo/mws-restaurant-stage-3) with `git clone https://github.com/romerixo/mws-restaurant-stage-3.git`.
 
-### What do I do from here?
+3. Set up **backend Server**, go to `mws-restaurant-stage-3` folder and run `node server`.
 
-1. In this folder, start up a simple HTTP server to serve up the site files on your local computer. Python has some simple tools to do this, and you don't even need to know Python. For most people, it's already installed on your computer. 
+4. In a terminal inside `Project-Restaurant-Review`, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 80` (or some other port, if port 80 is already in use.) For Python 3.x, you can use `python3 -m http.server 80`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
 
-In a terminal, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 80` (or some other port, if port 80 is already in use.) For Python 3.x, you can use `python3 -m http.server 80`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
-
-2. With your server running, visit the site: `http://localhost:80`, and look around for a bit to see what the current experience looks like.
-3. Explore the provided code, and make start making a plan to implement the required features in three areas: responsive design, accessibility and offline use.
-4. Write code to implement the updates to get this site on its way to being a mobile-ready website.
+5. With both servers running (_Project-Restayrabt-Review_ and _backend API server_), visit the site: `http://localhost:80`. 
 
 ### Note Backend Server
-You will need to use from my repository <https://github.com/romerixo/mws-restaurant-stage-3> the backend server since I modified the file `localDiskDb.db` from `.tmp` folder, or simply replace the file in your backend server with mine (<https://github.com/romerixo/mws-restaurant-stage-3/blob/master/.tmp/localDiskDb.db>).
-
-### Note about ES6
-
-Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
-
-
+You will need to use the backend server from my repository <https://github.com/romerixo/mws-restaurant-stage-3> since I modified the file `localDiskDb.db` from `.tmp` folder. You can simply replace the file in your backend server with mine (<https://github.com/romerixo/mws-restaurant-stage-3/blob/master/.tmp/localDiskDb.db>).
 

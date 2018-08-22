@@ -50,6 +50,16 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const figcaption = document.querySelector('#restaurant-img + figcaption');
   figcaption.innerHTML = restaurant.name;
 
+  const figure = document.querySelector('#restaurant-container figure');
+  const favorite = document.createElement('div');
+  favorite.style.marginTop = '28px';
+  favorite.classList.add('favorite');
+  // fix error on saved format on backend server
+  const isFavorite = (restaurant.is_favorite === true || restaurant.is_favorite === 'true'); 
+  favorite.innerHTML = (isFavorite) ? '♥' : '♡';
+  favorite.onclick = handleFavoriteClick; // From responsive.js (common script)
+  figure.append(favorite);
+
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
@@ -289,7 +299,6 @@ function handleNewReview(){
       
       // Send sync request to update when conecction is available
       if('serviceWorker' in navigator && 'SyncManager' in window){
-        console.log("Enviando evento sync...");
         navigator.serviceWorker.ready.then(function(reg) {
           return reg.sync.register('pending-reviews')
           .then(e => console.log('Sync event registered!'));

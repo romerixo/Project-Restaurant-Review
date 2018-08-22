@@ -178,3 +178,53 @@ window.addEventListener('online', function(){
     offline.classList.remove('offline');
 });
 
+
+// Handlign Favorite Restaurant ************************************************ 
+function handleFavoriteClick(){
+  const target = event.target;
+  const restaurantId = (self.restaurant) ?
+    self.restaurant.id : Number(target.parentNode.dataset.restaurantId); // Restaurant id
+  const restaurant = self.restaurant || self.restaurants.find(res => res.id === restaurantId);
+  const favorite = !(restaurant.is_favorite === true || restaurant.is_favorite === 'true') // set the opposite
+  const onlyFavorite = document.getElementById('onlyfavorites');
+
+  DBHelper.setFavorite(restaurantId, favorite)
+  .then(response => {
+    if(response.status === 200){
+      restaurant.is_favorite = favorite;
+      target.innerHTML = favorite ?  '♥ ' : '♡';
+      if(!onlyFavorite)
+        return;
+
+      if(!favorite && onlyFavorite.checked)
+        handleOnlyFavorites(onlyFavorite);
+    }
+  })
+  .catch(() => {
+    window.alert('Error de la conexión!');
+  });
+}
+
+
+/**
+ * @desc Handle "Only favorites" checkbox
+ * @param {object} target If it is set then is select as target element, else the target will be getted from event
+ */
+function handleOnlyFavorites(target=null){
+  const checkbox = (target) ? target : event.target;
+  const restaurantElms = document.querySelectorAll('#restaurants-list > li');
+  const favoriteIds = self.restaurants.map(rest => {
+    if(rest.is_favorite === 'true' || rest.is_favorite === true)
+      return rest.id;
+  }).filter(rest => typeof rest  !== 'undefined');
+
+  if(checkbox.checked)
+    restaurantElms.forEach(rest => {
+      const restId = Number(rest.dataset.restaurantId);
+      //const is = !()
+      if(favoriteIds.indexOf(restId) === -1)
+        rest.style.display = 'none';
+    });
+  else
+    restaurantElms.forEach(rest => rest.style.removeProperty('display'));
+}

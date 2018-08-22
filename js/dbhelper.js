@@ -261,4 +261,17 @@ class DBHelper {
       method: 'DELETE'
     });
   }
+
+  /**
+   * @desc Set or unset restaurant as favorite
+   * @param {number} resId Restaurant ID
+   * @param {boolean} favorite True if is favorite or false if not
+   * @return {object} Promise with the server response
+   */
+  static setFavorite(resId, favorite=true){
+    //favorite = favorite.toString();
+    return fetch(`${DBHelper.RESTAURANTS_URL}/${resId}/?is_favorite=${favorite}`, {
+      method: 'PUT'
+    });
+  }
 }
