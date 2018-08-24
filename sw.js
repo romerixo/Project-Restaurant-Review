@@ -27,9 +27,10 @@ function createDB(){
   // create-open indexedDB
   idb.open(DB_NAME, DB_VERSION, upgradeDB => {
     // creating store
-    upgradeDB.createObjectStore('json-data', {keyPath: 'path'});
+    //upgradeDB.createObjectStore('json-data', {keyPath: 'path'});
     upgradeDB.createObjectStore('reviews');
     upgradeDB.createObjectStore('pending-reviews', {autoIncrement: true});
+    upgradeDB.createObjectStore('restaurants', {keyPath: 'id'});
   });
 
   console.log('db created!');
@@ -63,6 +64,23 @@ function getJSONDB(dbPromise, url){
       });
 }
 
+function addRestauratnDB(dbPromise, restaurant){
+  return dbPromise.then(db => {
+    const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
+    return store.put(restaurant);
+  });
+}
+
+function getRestaurantDB(dbPromise, id=null){
+  return dbPromise.then(db => {
+    const store = db.transaction('restaurants').objectStore('restaurants');
+
+    if(id)
+      return store.get(id);
+
+    return store.getAll();
+  });
+}
 
 /**
  * @description Add entry to IndexedDB with the path and the response obtained from the fetch API
@@ -88,33 +106,10 @@ function addJSONDB(dbPromise, url, json){
  * @param {object} dbPromise Opened db
  * @param {object} restaurant New estaurant to update (use restaurant.id as primary key)
  */
-function updateRestaurantDb(dbPromise, restaurant, url){
-  const key = (url.pathname.endsWith('/')) ? url.pathname.slice(0, -1) : url.pathname;
-
+function updateRestaurantDb(dbPromise, restaurant){
   return dbPromise.then(db => {
-    const store = db.transaction('json-data', 'readwrite').objectStore('json-data');
-    
-    return store.get(key)
-    .then(data => {
-      if(typeof data === 'undefined')
-        return null;
-      
-      // Change only `is_favorite` property from the same restaurant (object)
-      if(Array.isArray(data.json)){ // from index.html
-        const newData = data.json.map(rest => {
-          if(rest.id === restaurant.id){
-            rest = restaurant;
-            return rest;
-          }
-
-          return rest;
-        });
-
-        return store.put({path: key, json: newData});
-      }
-      
-      return store.put({path: key, json: restaurant}); // sustitute by new restaurant
-    });
+    const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
+    return store.put(restaurant);
   });
 }
 
@@ -362,32 +357,59 @@ self.addEventListener('fetch', function(evt){
         fetch(request).then(response => {
           if(response.status === 200)
             response.clone().json()
-            .then(restaurant => updateRestaurantDb(dbPromise, restaurant, url));
+            .then(restaurant => updateRestaurantDb(dbPromise, restaurant));
 
           return response;
         })
       );
     }
-    else{
+    // [GET] All restaurants
+    else if(request.method === 'GET' && /\/restaurants\/*$/.test(url.pathname)){
+      console.log("Geting all restaurants");
       evt.respondWith(
-        getJSONDB(dbPromise, url).then(json => {
-          if(json){
-            return new Response(JSON.stringify(json));
-          }
+        getRestaurantDB(dbPromise).then(restaurants => {
+          if(restaurants.length)
+            return new Response(JSON.stringify(restaurants));
 
+          // Fetch, caching and return
           return fetch(request).then(response => {
-            const response2 = response.clone();
-
-            // adding new JSON response to DB
-            if(response2.status === 200)
-              response2.json().then(json => addJSONDB(dbPromise, url, json));
-
+            if(response.status === 200){
+              response.clone().json().then(restaurants => {
+                restaurants.forEach(rest => addRestauratnDB(dbPromise, rest));
+              })
+            }
             return response;
           }).catch(err => console.log('ERROR FROM SW.JS:', err));
         })
       );
     }
-    
+    // [GET] Restaurant by ID
+    else if(request.method === 'GET' && /\/restaurants\/\d+\/*$/.test(url.pathname)){
+      const id = Number(url.pathname.match(/\/(\d+)/)[1]);
+      evt.respondWith(
+        getRestaurantDB(dbPromise, id).then(restaurant => {
+          if(restaurant){
+            console.log('respondiendo desde la BD');
+            return new Response(JSON.stringify(restaurant));            
+          }
+
+          const urlRestaurants = url.toString().match(/(.*)\/\d+\/*$/)[1];
+
+          return fetch(urlRestaurants).then(response => {
+            if(response.status === 200){
+              return response.clone().json().then(restaurants => {
+                restaurants.forEach(rest => addRestauratnDB(dbPromise, rest)); // add restaurants to DB
+
+                const restaurant = restaurants.find(rest => rest.id === id);
+                console.log(restaurant);
+                return new Response(JSON.stringify(restaurant));
+              })
+            }
+          }).catch(err => console.log('ERROR FROM SW.JS:', err));
+
+        })
+      );
+    }
   }
 else{
     evt.respondWith(

@@ -204,17 +204,17 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
 // TODO: Uncomment for testing
-//  const deleteBtn = document.createElement('button');
-//  deleteBtn.innerHTML = 'Delete review';
-//  deleteBtn.onclick = () => {
-//    DBHelper.deleteReview(review.id).then(() => {
-//      window.alert('The review has been deleted!');
-//      fillReviewsHTML(self.restaurant.id);
-//    }).catch(err => {
-//      console.log(err);
-//    });
-//  };
-//  li.appendChild(deleteBtn);
+  const deleteBtn = document.createElement('button');
+  deleteBtn.innerHTML = 'Delete review';
+  deleteBtn.onclick = () => {
+    DBHelper.deleteReview(review.id).then(() => {
+      window.alert('The review has been deleted!');
+      fillReviewsHTML(self.restaurant.id);
+    }).catch(err => {
+      console.log(err);
+    });
+  };
+  li.appendChild(deleteBtn);
 
   return li;
 }
