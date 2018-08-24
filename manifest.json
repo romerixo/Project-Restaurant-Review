@@ -3,22 +3,22 @@
   "name": "Restaurant Reviews",
   "icons": [
     {
-      "src": "logo_48.png",
+      "src": "img/logo_48.png",
       "type": "image/png",
       "sizes": "48x48"
     },
     {
-      "src": "logo_96.png",
+      "src": "img/logo_96.png",
       "type": "image/png",
       "sizes": "96x96"
     },
     {
-      "src": "logo_192.png",
+      "src": "img/logo_192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo_512.png",
+      "src": "img/logo_512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

@@ -1,4 +1,4 @@
-self.importScripts('idb.js');
+self.importScripts('js/idb.js');
 
 let dbPromise = null;
 const API_HOST = 'http://localhost:1337';
@@ -9,9 +9,11 @@ const DB_VERSION = 1;
 const urlsToCache = [
   '/',
   '/js/dbhelper.js',
-  '/js/main.js',
-  '/js/responsive.js',
-  '/js/restaurant_info.js',
+  '/js/index.js',
+  '/js/common.js',
+  '/css/common.css',
+  '/js/restaurant.js',
+  '/js/idb.js',
   '/index.html',
   '/restaurant.html'
 ];
@@ -77,6 +79,42 @@ function addJSONDB(dbPromise, url, json){
       .put({path: path, json: json});
 
     return tx.complete;
+  });
+}
+
+
+/**
+ * @desc Update Restaurant on IDB
+ * @param {object} dbPromise Opened db
+ * @param {object} restaurant New estaurant to update (use restaurant.id as primary key)
+ */
+function updateRestaurantDb(dbPromise, restaurant, url){
+  const key = (url.pathname.endsWith('/')) ? url.pathname.slice(0, -1) : url.pathname;
+
+  return dbPromise.then(db => {
+    const store = db.transaction('json-data', 'readwrite').objectStore('json-data');
+    
+    return store.get(key)
+    .then(data => {
+      if(typeof data === 'undefined')
+        return null;
+      
+      // Change only `is_favorite` property from the same restaurant (object)
+      if(Array.isArray(data.json)){ // from index.html
+        const newData = data.json.map(rest => {
+          if(rest.id === restaurant.id){
+            rest = restaurant;
+            return rest;
+          }
+
+          return rest;
+        });
+
+        return store.put({path: key, json: newData});
+      }
+      
+      return store.put({path: key, json: restaurant}); // sustitute by new restaurant
+    });
   });
 }
 
@@ -317,6 +355,19 @@ self.addEventListener('fetch', function(evt){
         })
       );
     }
+    // [PUT] Favorite restaurants bypass cache
+    else if(request.method === 'PUT' &&
+      /\/restaurants\/\d+\/\?is_favorite=(true|false)/.test(url.pathname + url.search)){ 
+      evt.respondWith(
+        fetch(request).then(response => {
+          if(response.status === 200)
+            response.clone().json()
+            .then(restaurant => updateRestaurantDb(dbPromise, restaurant, url));
+
+          return response;
+        })
+      );
+    }
     else{
       evt.respondWith(
         getJSONDB(dbPromise, url).then(json => {
@@ -337,7 +388,8 @@ self.addEventListener('fetch', function(evt){
       );
     }
     
-  }else{
+  }
+else{
     evt.respondWith(
       caches.match(request)
       .then(function(response){
