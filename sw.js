@@ -330,7 +330,6 @@ self.addEventListener('fetch', function(evt){
       evt.respondWith(
         getReviewsDB(dbPromise, resId)
         .then(async reviews => {
-          console.log("Reviews on [GET]:", reviews)
           if(!reviews.length){
             try{
               reviewsRes = await fetch(request);
@@ -365,7 +364,6 @@ self.addEventListener('fetch', function(evt){
     }
     // [GET] All restaurants
     else if(request.method === 'GET' && /\/restaurants\/*$/.test(url.pathname)){
-      console.log("Geting all restaurants");
       evt.respondWith(
         getRestaurantDB(dbPromise).then(restaurants => {
           if(restaurants.length)
@@ -389,7 +387,6 @@ self.addEventListener('fetch', function(evt){
       evt.respondWith(
         getRestaurantDB(dbPromise, id).then(restaurant => {
           if(restaurant){
-            console.log('respondiendo desde la BD');
             return new Response(JSON.stringify(restaurant));            
           }
 
@@ -401,7 +398,6 @@ self.addEventListener('fetch', function(evt){
                 restaurants.forEach(rest => addRestauratnDB(dbPromise, rest)); // add restaurants to DB
 
                 const restaurant = restaurants.find(rest => rest.id === id);
-                console.log(restaurant);
                 return new Response(JSON.stringify(restaurant));
               })
             }

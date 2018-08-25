@@ -1,10 +1,8 @@
 const gulp = require('gulp'),
-  livereload = require('gulp-livereload'),
   uglify = require('gulp-uglifyes'),
   clean = require('gulp-clean'),
   responsive = require('gulp-responsive'),
   cleanCSS = require('gulp-clean-css'),
-  sourcemaps = require('gulp-sourcemaps'),
   gzip = require('gulp-gzip'),
   babel = require('gulp-babel');
 
@@ -109,18 +107,12 @@ gulp.task('build:dist', gulp.series(
     'fixed-img'
 ));
 
-
-//******************************************************************************
-// Live reload tasks ***********************************************************
-//******************************************************************************
-gulp.task('reload', function(done){
-  gulp.src(['*', 'js/*', 'css/*'])
-  .pipe(livereload());
-
-  done();
-});
+gulp.task('build', gulp.series(
+  function(done){target = dirs.dev; done()},
+  'responsive-img',
+  'fixed-img'
+));
 
 gulp.task('watch', function(){
-  livereload.listen();
   gulp.watch(['*', 'js/*.js', 'css/*.css'], gulp.series('build:dist'));
 });

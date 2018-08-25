@@ -4,20 +4,60 @@
 
 ## Project Overview: Stage 3
 
+Project made for **Udacity Mobile Web Specialist Certification Course** by **romerixo**.
+
+### Considerations
 - The project is only tested on ***Google Chrome***.
 - The format used for the images is **WebP** which is unsupported by ***Mozilla Firefox*** and [others](https://caniuse.com/#feat=webp).
 - Offline capabilities are performed with IndexedDB API through [Jake Archibald's IndexedDB Promised library](https://github.com/jakearchibald/idb). This is done with the **Service Worker** in `sw.js`.
 
-## Set Up
-1. Clone or download from my repo [Project-Restaurant-Review](https://github.com/romerixo/Project-Restaurant-Review) with `git clone https://github.com/romerixo/Project-Restaurant-Review.git`.
+## Prequisites
 
-2. Clone or download from my repo [mws-restaurant-stage-3](https://github.com/romerixo/mws-restaurant-stage-3) with `git clone https://github.com/romerixo/mws-restaurant-stage-3.git`.
+* Clone or download from my repo [Project-Restaurant-Review](https://github.com/romerixo/Project-Restaurant-Review).
+```
+git clone https://github.com/romerixo/Project-Restaurant-Review.git
+```
 
-3. Set up **backend Server**, go to `mws-restaurant-stage-3` folder and run `node server`.
+* Clone or download from my repo [mws-restaurant-stage-3](https://github.com/romerixo/mws-restaurant-stage-3).
+```
+git clone https://github.com/romerixo/mws-restaurant-stage-3.git.
+```
 
-4. In a terminal inside `Project-Restaurant-Review`, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 80` (or some other port, if port 80 is already in use.) For Python 3.x, you can use `python3 -m http.server 80`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
+* Instal a **HTTP Server** that supports **gzip encode**, e.g [http-server]( https://www.npmjs.com/package/http-server).
+```
+npm install -g http-server
+```
 
-5. With both servers running (_Project-Restayrabt-Review_ and _backend API server_), visit the site: `http://localhost:80`. 
+## Installing
+
+1. Install and run the backend server API [mws-restaurant-stage-3](https://github.com/romerixo/mws-restaurant-stage-3#development-local-api-server)
+
+2. From `Project-restaurant-Review` folder install dependencies.
+```
+npm i
+```
+
+3. Build the project in **develpment mode** with `gulp`.
+```
+gulp build
+```
+
+4. You can also to use the **production mode**.
+```
+gulp build:dist
+```
+
+5. Run `http-server` to start the **App**.
+     - **Development mode**, from the root directory (`/`).
+     ```
+     http-server -p80
+     ```
+     - **Production mode**, inside _dist_ folder (`/dist`), note `-g` flag for enable _gzip_ encode.
+     ```
+     http-server -p80 -g
+     ```
+6. Open with _Google Chrome_ <http://localhost:80>.
+
 
 ### Note Backend Server
 You will need to use the backend server from my repository <https://github.com/romerixo/mws-restaurant-stage-3> since I modified the file `localDiskDb.db` from `.tmp` folder. You can simply replace the file in your backend server with mine (<https://github.com/romerixo/mws-restaurant-stage-3/blob/master/.tmp/localDiskDb.db>).
