@@ -18,7 +18,6 @@ const urlsToCache = [
   '/restaurant.html'
 ];
 
-// Db Helpers ****************************************************************** 
 
 /**
  * @desc Make DB
@@ -36,6 +35,7 @@ function createDB(){
   console.log('db created!');
 }
 
+
 /**
  * @desc Open db
  * @return {Promise} Opened Db
@@ -44,25 +44,6 @@ function openDB(){
   return idb.open(DB_NAME, DB_VERSION);
 }
 
-/**
- * @description Return a promise with the Response object (restaurant JSON) or null if not exist.
- * 
- * @param {Promise} dbPromise Promise with the opened DB
- * @param {String} url Path as key
- * @return {Promise} Promise with <Response | null>
- */
-function getJSONDB(dbPromise, url){
-  const path = url.pathname + url.search;
-
-  return dbPromise.then(db => 
-    db.transaction('json-data').objectStore('json-data').get(path))
-      .then(data => {
-        if(typeof data === 'undefined')
-          return null;
-
-        return data.json;  
-      });
-}
 
 function addRestauratnDB(dbPromise, restaurant){
   return dbPromise.then(db => {
@@ -79,24 +60,6 @@ function getRestaurantDB(dbPromise, id=null){
       return store.get(id);
 
     return store.getAll();
-  });
-}
-
-/**
- * @description Add entry to IndexedDB with the path and the response obtained from the fetch API
- * @param {object} dbPromise Promise with the opened DB
- * @param {string} url Url from request
- * @return {object} Return a promise if the transaction was successful
- */
-function addJSONDB(dbPromise, url, json){
-  const path = url.pathname + url.search;
-
-  return dbPromise.then(db => {
-    const tx = db.transaction('json-data', 'readwrite');
-    tx.objectStore('json-data')
-      .put({path: path, json: json});
-
-    return tx.complete;
   });
 }
 
@@ -139,6 +102,7 @@ function addReviews(dbPromise, reviews){
   });
 }
 
+
 /**
  * @desc Get reviews sotred in db by restaurant id
  * @param {object} dbPromise Promise with opened Db
@@ -156,6 +120,7 @@ function getReviewsDB(dbPromise, resId){
   );
 }
 
+
 /**
  * @desc Get all reviews from Db
  * @param {object} dbPromise Promise with the opened Db
@@ -168,7 +133,7 @@ async function getAllReviewsDB(dbPromise, resId){
   return reviews;
 }
 
-// Pending Reviews ***************************************************************
+
 /**
  * @desc Add review into pending-reviews store to send it afterwards
  * @param {object} dbPromise opened Db
@@ -182,6 +147,7 @@ function addPendingReview(dbPromise, review){
     return tx.complete;
   });
 }
+
 
 /**
  * @desc Get all pending reviews if resId is null, else get by restaurant id
@@ -232,8 +198,6 @@ function getPendingReviewsKeys(dbPromise){
     })
   });
 }
-
-// End Pending Reviews *********************************************************
 
 
 // Caching static elements on ServiceWorker installation
@@ -407,7 +371,7 @@ self.addEventListener('fetch', function(evt){
       );
     }
   }
-else{
+  else{
     evt.respondWith(
       caches.match(request)
       .then(function(response){
